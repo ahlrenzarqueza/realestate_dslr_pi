@@ -1,0 +1,15 @@
+.app-container {
+  display: flex !important;
+  position: relative;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #282828;
+  margin: 0 auto;
+  padding: 0 !important;
+}
+
+.content-container {
+  flex: 1;
+  padding: 10px;
+}

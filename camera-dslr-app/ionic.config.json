@@ -1,0 +1,7 @@
+{
+  "name": "camera-dslr-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

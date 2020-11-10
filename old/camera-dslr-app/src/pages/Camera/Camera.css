@@ -1,0 +1,16 @@
+.camera-grid {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.camera-canvas-cont {
+    width: 100%;
+    max-width: unset !important;
+}
+
+.camera-canvas {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+}
