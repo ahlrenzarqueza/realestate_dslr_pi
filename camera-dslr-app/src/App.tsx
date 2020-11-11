@@ -1,5 +1,11 @@
 import Menu from './components/Menu';
 import Page from './pages/Page';
+import Home from './pages/Home';
+import Camera from './pages/Camera';
+import NewProperty from './pages/NewProperty';
+import RoomGallery from './pages/RoomGallery';
+import PropertyGallery from './pages/PropertyGallery';
+import Settings from './pages/Settings'
 import React from 'react';
 import { IonApp, IonRouterOutlet, IonSplitPane, setupConfig } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -23,6 +29,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './App.css';
 
 setupConfig({
   rippleEffect: false,
@@ -37,8 +44,13 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main">
           <Menu />
           <IonRouterOutlet id="main">
-            <Route path="/page/:name" component={Page} exact />
-            <Route path="/home" component={App} exact />
+            {/* <Route path="/page/:name" component={Page} exact /> */}
+            <Route path="/home" component={Home} exact />
+            <Route path="/addproperty" component={NewProperty} exact />
+            <Route path="/camera" component={Camera} exact />
+            <Route path="/properties" component={PropertyGallery} exact />
+            <Route path="/gallery" component={RoomGallery} exact />
+            <Route path="/settings" component={Settings} exact />
             <Redirect from="/" to="/home" exact />
           </IonRouterOutlet>
         </IonSplitPane>

@@ -1,7 +1,7 @@
 import * as t from './types';
 
 const initialState : t.IAppState = {
-    loggedInUser: undefined
+    loggedInUser: null
 }
 
 export default (state = initialState, action: t.ActionTypes) => {
@@ -10,7 +10,7 @@ export default (state = initialState, action: t.ActionTypes) => {
             state.loggedInUser = action.payload;
             break;
         case t.LOGOUT_SESSION:
-            delete state.loggedInUser;
+            state.loggedInUser = null;
             break;
         default:
             return state;

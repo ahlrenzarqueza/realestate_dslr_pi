@@ -4,17 +4,19 @@ export interface ILoggedInUser {
 }
 
 export interface IAppState {
-    loggedInUser?: ILoggedInUser
+    loggedInUser: ILoggedInUser | null
 }
 
 export interface IJWTCredentials {
     isJWT: boolean
 }
 
-export interface ICredentials extends IJWTCredentials {
+export interface ILoginCredentials {
     email?: string,
     password?: string
 }
+
+export interface ICredentials extends IJWTCredentials, ILoginCredentials {}
 
 export const AUTH_SESSION = 'AUTH_SESSION';
 export const AUTH_SESSION_SUCCESS = 'AUTH_SESSION_SUCCESS';
@@ -40,7 +42,7 @@ export interface AuthenticateFailureAction {
 
 export interface LoginAction {
     type: typeof LOGIN_SESSION,
-    payload: ICredentials
+    payload: ILoginCredentials
 }
 
 export interface LoginSuccessAction {

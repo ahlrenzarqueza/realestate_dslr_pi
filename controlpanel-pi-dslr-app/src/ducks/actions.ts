@@ -22,7 +22,7 @@ export const authSessionFail = () : t.ActionTypes => {
     }
 }
 
-export const login = (creds:t.ICredentials) : t.ActionTypes => {
+export const login = (creds:t.ILoginCredentials) : t.ActionTypes => {
     return {
         type: t.LOGIN_SESSION,
         payload: creds

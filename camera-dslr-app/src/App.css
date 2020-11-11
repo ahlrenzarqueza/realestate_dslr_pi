@@ -1,0 +1,7 @@
+ion-content {
+    overflow: hidden;
+}
+
+ion-list {
+    overflow: auto;
+}

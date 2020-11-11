@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'fontsource-roboto';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 // Store Dependencies
 import configureStore from './configureStore';
@@ -11,10 +11,36 @@ import { Provider } from 'react-redux';
 
 const store = configureStore();
 
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      'Poppins',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#4764ff'
+    }
+  }
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
