@@ -10,12 +10,12 @@ function* helloSaga() {
 function* authenticate ({email, password, isJWT}: t.ICredentials) {
     try{
         if(isJWT) {
-            const userdata = yield call(instance.post, '/user/getuser');
+            const { data: userdata } = yield call(instance.post, '/user/getuser');
             yield put(actions.authSessionSuccess(userdata));
         }
         else {
-            const token = yield call(instance.post, '/user/login', {email, password});
-            yield put(actions.loginSuccess());
+            const {  data: userdata } = yield call(instance.post, '/user/login', {email, password});
+            yield put(actions.loginSuccess(userdata));
         }
     }
     catch(e) {
@@ -31,10 +31,6 @@ function* authenticationCycle () {
         yield call(instance.post, '/user/logout');
         yield put(actions.logout());
     }
-}
-
-function* authenticateSession () {
-
 }
 
 export default function* rootSaga() {

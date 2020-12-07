@@ -1,0 +1,1 @@
+MEDIA_PATH = 'C:\\Projects\\realestate_dslr_pi\\rpi-camera-py-api\\files\\'

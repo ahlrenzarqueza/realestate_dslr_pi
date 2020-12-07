@@ -1,8 +1,8 @@
 export interface IProperty {
     address: string,
-    agent: string,
-    numBedroom: number,
-    numBathroom: number
+    agentName: string,
+    numOfBedrooms: number,
+    numOfBathrooms: number
 }
 
 export interface IPropertyDb extends IProperty {
@@ -10,17 +10,24 @@ export interface IPropertyDb extends IProperty {
 }
 
 export interface IPropertyRoom {
-    scene: 'indoor' | 'outdoor',
-    name: string
+    mode: 'indoor' | 'outdoor',
+    name: string,
+    propertyId?: number,
+    roomId?: number,
+    mediapath: string
 }
 
 export interface IAppState {
     activeProperty: IPropertyDb | null,
+    activeBlendedImage: string | null,
     propertyList: IPropertyDb[],
     roomList: IPropertyRoom[],
     isLoadingState: {
+        addProperty: boolean,
         properties: boolean,
-        propertyRooms: boolean
+        propertyRooms: boolean,
+        camera: boolean,
+        addRoom: boolean,
     },
     errorState: IAppError | null
 }
@@ -42,9 +49,19 @@ export interface IAppError {
 export const CREATE_PROPERTY = 'CREATE_PROPERTY';
 export const CREATE_PROPERTY_SUCCESS = 'CREATE_PROPERTY_SUCCESS';
 export const CREATE_PROPERTY_FAILURE = 'CREATE_PROPERTY_FAILURE';
+export const GET_PROPERTIES = 'GET_PROPERTIES';
+export const GET_PROPERTIES_SUCCESS = 'GET_PROPERTIES_SUCCESS';
+export const GET_PROPERTIES_FAILURE = 'GET_PROPERTIES_FAILURE';
 export const GET_PROPERTY_ROOMS = 'GET_PROPERTY_ROOMS';
 export const GET_PROPERTY_ROOMS_SUCCESS = 'GET_PROPERTY_ROOMS_SUCCESS';
 export const GET_PROPERTY_ROOMS_FAILURE = 'GET_PROPERTY_ROOMS_FAILURE';
+export const SET_ACTIVE_PROPERTY = 'SET_ACTIVE_PROPERTY';
+export const TRIGGER_CAPTURE = 'TRIGGER_CAPTURE';
+export const TRIGGER_CAPTURE_SUCCESS = 'TRIGGER_CAPTURE_SUCCESS';
+export const TRIGGER_CAPTURE_FAILURE = 'TRIGGER_CAPTURE_FAILURE';
+export const CREATE_PROPERTY_ROOM = 'CREATE_PROPERTY_ROOM';
+export const CREATE_PROPERTY_ROOM_SUCCESS = 'CREATE_PROPERTY_ROOM_SUCCESS';
+export const CREATE_PROPERTY_ROOM_FAILURE = 'CREATE_PROPERTY_ROOM_FAILURE';
 // export const AUTH_SESSION = 'AUTH_SESSION';
 // export const AUTH_SESSION_SUCCESS = 'AUTH_SESSION_SUCCESS';
 // export const AUTH_SESSION_FAILURE = 'AUTH_SESSION_FAILURE';
@@ -99,6 +116,20 @@ export interface CreatePropertyFailureAction {
     payload: IAppError
 }
 
+export interface GetPropertiesAction {
+    type: typeof GET_PROPERTIES,
+}
+
+export interface GetPropertiesSuccessAction {
+    type: typeof GET_PROPERTIES_SUCCESS,
+    payload: IProperty[]
+}
+
+export interface GetPropertiesFailureAction {
+    type: typeof GET_PROPERTIES_FAILURE,
+    payload: IAppError
+}
+
 export interface GetPropertyRoomsAction {
     type: typeof GET_PROPERTY_ROOMS,
     payload: number
@@ -114,13 +145,56 @@ export interface GetPropertyRoomsFailureAction {
     payload: IAppError
 }
 
+export interface SetActiveProperty {
+    type: typeof SET_ACTIVE_PROPERTY,
+    payload: IPropertyDb
+}
+
+export interface TriggerCapture {
+    type: typeof TRIGGER_CAPTURE,
+    payload: 'indoor' | 'outdoor'
+}
+
+export interface TriggerCaptureSuccess {
+    type: typeof TRIGGER_CAPTURE_SUCCESS,
+    payload: string
+}
+
+export interface TriggerCaptureFailure {
+    type: typeof TRIGGER_CAPTURE_FAILURE,
+    payload: IAppError,
+}
+
+export interface CreatePropertyRoom {
+    type: typeof CREATE_PROPERTY_ROOM,
+}
+
+export interface CreatePropertyRoomSuccess {
+    type: typeof CREATE_PROPERTY_ROOM_SUCCESS,
+}
+
+export interface CreatePropertyRoomFail {
+    type: typeof CREATE_PROPERTY_ROOM_FAILURE,
+    payload: IAppError,
+}
+
 export type ActionTypes = 
 CreatePropertyAction |
 CreatePropertySuccessAction |
 CreatePropertyFailureAction |
+GetPropertiesAction |
+GetPropertiesSuccessAction |
+GetPropertiesFailureAction |
 GetPropertyRoomsAction |
 GetPropertyRoomsSuccessAction |
-GetPropertyRoomsFailureAction
+GetPropertyRoomsFailureAction |
+SetActiveProperty |
+TriggerCapture |
+TriggerCaptureSuccess |
+TriggerCaptureFailure |
+CreatePropertyRoom |
+CreatePropertyRoomSuccess |
+CreatePropertyRoomFail
 // | AuthenticateSuccessAction
 // | AuthenticateFailureAction
 // | LoginAction

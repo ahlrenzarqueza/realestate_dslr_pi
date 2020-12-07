@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { IAppState, ActionTypes } from '../ducks/types';
+import { IAppState, ActionTypes, ILoggedInUser } from '../ducks/types';
 import * as actions from '../ducks/actions';
 
 interface IStateProps {
-    loggedInUser: any
+    loggedInUser: ILoggedInUser | null,
+    authError: boolean
 }
 
 interface IDispatchProps {
     authenticateSession: () => ActionTypes;
 }
 
-interface IComponentProp {
-    path: string,
+interface IComponentProp extends RouteProps {
     component: React.FC<any>  
 }
 
@@ -22,28 +22,42 @@ interface IProps extends IStateProps, IDispatchProps, IComponentProp {}
 const ProtectedRoute:React.FC<IProps> = ({
     component: Component, 
     loggedInUser, 
+    authError,
     authenticateSession, 
     ...rest
 }) => {
-    const [ allowedAccess, setAllowedAccess ] = useState(null);
+    const [ allowedAccess, setAllowedAccess ] = useState<any>('authenticating');
 
     useEffect(() => {
-        if(!loggedInUser) authenticateSession();
-    }, []);
+        if (authError === true) {
+            setAllowedAccess(false);
+        }
+        else if(!loggedInUser) {
+            authenticateSession();
+            setAllowedAccess('authenticating');
+        }
+        else {
+            console.log('is logged in', loggedInUser);
+            setAllowedAccess('hihi');
+        }
+    }, [loggedInUser, authError]);
 
     useEffect(() => {
-        
-    }, [loggedInUser]);
+        console.log('authError changed', authError);
+    }, [authError])
 
     return (
         <Route {...rest} render={
             (props) => {
-                if (allowedAccess)
+                if (allowedAccess === 'hihi')
                     return <Component {...props}></Component>
-                else if(allowedAccess === false) {
+                else if (allowedAccess === 'authenticating') {
+                    return <h2>Authenticating...</h2>
+                }
+                else if (allowedAccess === false) {
                     return <Redirect to={
                         {
-                            pathname: "/",
+                            pathname: "/login",
                             state: {
                                 from: props.location
                             }
@@ -57,7 +71,8 @@ const ProtectedRoute:React.FC<IProps> = ({
 }
 
 const mapStateToProps = (state: IAppState) => ({
-    loggedInUser: state.loggedInUser
+    loggedInUser: state.loggedInUser,
+    authError: state.authError
 })
 
 const mapDispatchToProps = {

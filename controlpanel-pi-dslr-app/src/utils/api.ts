@@ -1,11 +1,9 @@
 import axios, {AxiosRequestConfig} from 'axios';
 
-const baseURL = "http://localhost:3030/api";
-
-export const instance = axios.create({baseURL});
+export const instance = axios.create()
 
 export default <T>(options: AxiosRequestConfig) => {
-    const instance = axios.create({baseURL});
+    const instance = axios.create();
     return instance.request<T>(options);
 };
 

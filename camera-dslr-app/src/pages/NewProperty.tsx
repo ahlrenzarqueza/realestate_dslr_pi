@@ -13,17 +13,40 @@ import {
   IonToolbar
 } from '@ionic/react';
 import {ContentWithFooter, FooterButton} from '../components/ContentWithFooter';
+import LoaderContainer from '../components/LoaderContainer';
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
+import actions from '../ducks/actions';
+import * as t from '../ducks/types';
 
-const NewProperty : React.FC<RouteComponentProps> = ({ history } ) => {
-  const [ address, setAddress ] = useState('');
-  const [ agentName, setAgentName ] = useState('');
-  const [ numOfBedrooms, setNumOfBedrooms ] = useState('');
-  const [ numOfBathrooms, setNumOfBathrooms ] = useState('');
+interface IComponentProps extends RouteComponentProps {
+  isLoadingState: boolean,
+  createProperty: (p : t.IProperty) => t.ActionTypes
+}
+
+const NewProperty : React.FC<IComponentProps> = ({ 
+  history, 
+  createProperty,
+  isLoadingState
+ } ) => {
+  const [ address, setAddress ] = useState<string>('');
+  const [ agentName, setAgentName ] = useState<string>('');
+  const [ numOfBedrooms, setNumOfBedrooms ] = useState(0);
+  const [ numOfBathrooms, setNumOfBathrooms ] = useState(0);
+
+  const onCreate = () => {
+    const property : t.IProperty = {
+      address, 
+      agentName, 
+      numOfBedrooms, 
+      numOfBathrooms
+    }
+    createProperty(property);
+  }
 
   const CreateFooterBtn = (
-    <FooterButton onClick={(e) => console.log('Create')}>Create</FooterButton>
+    <FooterButton onClick={onCreate} disabled={isLoadingState}>Create</FooterButton>
   )
 
   return (
@@ -38,31 +61,41 @@ const NewProperty : React.FC<RouteComponentProps> = ({ history } ) => {
       </IonHeader>
       <IonContent>
         <ContentWithFooter ButtonComponent={CreateFooterBtn}>
-          <IonList>
-            <IonItemDivider>Property Details</IonItemDivider>
-            <IonItem>
-              <IonLabel position="stacked">Address</IonLabel>
-              <IonInput value={address} placeholder="Display Name" onIonChange={e => setAddress(e.detail.value!)}></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonLabel position="stacked">Agent Name</IonLabel>
-              <IonInput value={agentName} placeholder="Agent Name" onIonChange={e => setAgentName(e.detail.value!)}></IonInput>
-            </IonItem>
+          <LoaderContainer loadingState={isLoadingState}>
+            <IonList>
+              <IonItemDivider>Property Details</IonItemDivider>
+              <IonItem>
+                <IonLabel position="stacked">Address</IonLabel>
+                <IonInput value={address} placeholder="Display Name" onIonChange={e => setAddress(e.detail.value!)}></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">Agent Name</IonLabel>
+                <IonInput value={agentName} placeholder="Agent Name" onIonChange={e => setAgentName(e.detail.value!)}></IonInput>
+              </IonItem>
 
-            <IonItemDivider>Rooms</IonItemDivider>
-            <IonItem>
-              <IonLabel position="stacked">Number of Bedrooms</IonLabel>
-              <IonInput value={numOfBedrooms} type="number" placeholder="1" onIonChange={e => setNumOfBedrooms(e.detail.value!)}></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonLabel position="stacked">Number of Bathrooms</IonLabel>
-              <IonInput value={numOfBathrooms} type="number" placeholder="1" onIonChange={e => setNumOfBathrooms(e.detail.value!)}></IonInput>
-            </IonItem>
-          </IonList>
+              <IonItemDivider>Rooms</IonItemDivider>
+              <IonItem>
+                <IonLabel position="stacked">Number of Bedrooms</IonLabel>
+                <IonInput value={numOfBedrooms} type="number" placeholder="1" onIonChange={(e : any) => setNumOfBedrooms(e.detail.value)}></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">Number of Bathrooms</IonLabel>
+                <IonInput value={numOfBathrooms} type="number" placeholder="1" onIonChange={(e : any) => setNumOfBathrooms(e.detail.value!)}></IonInput>
+              </IonItem>
+            </IonList>
+          </LoaderContainer>  
         </ContentWithFooter>
       </IonContent>  
     </IonPage>
   );
 };
 
-export default NewProperty;
+const mapStateToProps = (state : t.IAppState) => ({
+  isLoadingState: state.isLoadingState.addProperty
+})
+
+const mapDispatchToProps = {
+  createProperty: actions.createProperty
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewProperty);

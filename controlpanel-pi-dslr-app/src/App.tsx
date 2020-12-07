@@ -49,12 +49,10 @@ function App() {
         </div>
         <Router>
           <Switch>
-            {/* <ProtectedRoute path="/main" component={MainApp}></ProtectedRoute> */}
-            <Route path="/login">
+            <Route path="/login" exact>
               <Login/>
             </Route>
-            <Route path="/" component={MainApp}></Route>
-            <Redirect to="/login"></Redirect>
+            <ProtectedRoute path="/" component={MainApp}></ProtectedRoute>
           </Switch>
         </Router>
       </div>

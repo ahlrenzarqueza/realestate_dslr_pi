@@ -44,12 +44,12 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main">
           <Menu />
           <IonRouterOutlet id="main">
-            {/* <Route path="/page/:name" component={Page} exact /> */}
+            <Route path="/page/:name" component={Page} />
             <Route path="/home" component={Home} exact />
             <Route path="/addproperty" component={NewProperty} exact />
             <Route path="/camera" component={Camera} exact />
             <Route path="/properties" component={PropertyGallery} exact />
-            <Route path="/gallery" component={RoomGallery} exact />
+            <Route path="/gallery/:propertyId" component={RoomGallery} />
             <Route path="/settings" component={Settings} exact />
             <Redirect from="/" to="/home" exact />
           </IonRouterOutlet>

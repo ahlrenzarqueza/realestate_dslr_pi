@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
     Typography,
     Grid,
@@ -65,7 +65,8 @@ const Login : React.FC<IProps> = ({ postLogin, loggedInUser }) => {
     const classes = useStyles();
     const [ email, setEmail ] = useState<string>('');
     const [ password, setPassword ] = useState<string>('');
-    const handleLogin = () => {
+    const handleLogin = (event : React.SyntheticEvent) => {
+        event.preventDefault();
         postLogin({email, password});
     }
     return (
@@ -101,7 +102,7 @@ const Login : React.FC<IProps> = ({ postLogin, loggedInUser }) => {
                                     variant="filled"
                                     onChange={(e) => setPassword(e.target.value)}/>
                             </div>
-                            <Button variant="contained" size="large" color="primary" onClick={handleLogin}>
+                            <Button variant="contained" size="large" color="primary" type="submit">
                                 Login
                             </Button>
                         </Grid>

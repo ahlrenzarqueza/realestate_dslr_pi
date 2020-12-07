@@ -11,12 +11,13 @@ import {
   IonCardSubtitle,
   IonCardHeader
 } from '@ionic/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import { ContentWithFooter, FooterNavButton } from '../components/ContentWithFooter';
 import LoaderContainer from '../components/LoaderContainer';
+import actions from '../ducks/actions';
 import * as t from '../ducks/types';
 
 const StyledCardList = styled(IonList)`
@@ -35,17 +36,35 @@ const StyledCardSubtitle = styled(IonCardSubtitle)`
 
 interface IPropertyGalleryProps extends RouteComponentProps {
   propertyList: t.IPropertyDb[],
-  isLoadingState: boolean
+  isLoadingState: boolean,
+  getProperties: () => t.ActionTypes,
+  setActiveProperty: (p: t.IPropertyDb) => t.ActionTypes,
 }
 
-const PropertyGallery: React.FC<IPropertyGalleryProps> = ({ history, propertyList, isLoadingState }) => {
+const PropertyGallery: React.FC<IPropertyGalleryProps> = ({ 
+  history, 
+  propertyList, 
+  isLoadingState,
+  getProperties,
+  setActiveProperty
+ }) => {
+
+  useEffect(() => {
+    getProperties();
+  }, []);
 
   const BackToHomeBtn = (
-    <FooterNavButton linkto="/home" isBackMode={true} history={history}>Back to Home</FooterNavButton>
+    <FooterNavButton linkto="/home" isBackMode={true} history={history} color="tertiary">
+      Back to Home
+    </FooterNavButton>
   )
 
   const handlePropertySelect = (property: t.IPropertyDb) => {
-    alert('Clicked on ' + property.id)
+    // setActiveProperty(property);
+    history.push({
+      pathname: `/gallery/${property.id}`,
+      state: property
+    });
   }
 
   return (
@@ -82,4 +101,9 @@ const mapStateToProps = ({ propertyList, isLoadingState } : t.IAppState) => ({
   isLoadingState: isLoadingState.properties
 })
 
-export default connect(mapStateToProps)(PropertyGallery);
+const mapDispatchToProps = {
+  getProperties: actions.getProperties,
+  setActiveProperty: actions.setActiveProperty
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PropertyGallery);

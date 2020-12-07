@@ -2,58 +2,180 @@ import * as t from './types';
 
 const initialState : t.IAppState = {
     activeProperty: null,
+    activeBlendedImage: null,
     propertyList: [{
         id: 1,
-        agent: "John Doe",
+        agentName: "John Doe",
         address: "143 St.",
-        numBathroom: 1,
-        numBedroom: 1
+        numOfBathrooms: 1,
+        numOfBedrooms: 1
     },
     {
         id: 2,
-        agent: "John Doe",
+        agentName: "John Doe",
         address: "456 Somewhere Rd.",
-        numBathroom: 2,
-        numBedroom: 3
+        numOfBathrooms: 2,
+        numOfBedrooms: 3
     },
     {
         id: 3,
-        agent: "John Doe",
+        agentName: "John Doe",
         address: "789 Real Condo",
-        numBathroom: 1,
-        numBedroom: 4
+        numOfBathrooms: 1,
+        numOfBedrooms: 4
     }],
     roomList: [],
     isLoadingState: {
+        addProperty: false,
         properties: false,
-        propertyRooms: false
+        propertyRooms: false,
+        camera: false,
+        addRoom: false,
     },
     errorState: null
 }
 
 export default (state = initialState, action: t.ActionTypes) => {
     switch(action.type) {
+        case t.SET_ACTIVE_PROPERTY:
+            return {
+                ...state,
+                activeProperty: action.payload,
+            }
         case t.CREATE_PROPERTY:
-            state.errorState = null;
-            break;
+            return {
+                ...state,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    addProperty: true
+                },
+                errorState: null,
+            }
         case t.CREATE_PROPERTY_SUCCESS:
-            state.activeProperty = action.payload;
-            break;
+            return {
+                ...state,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    addProperty: false
+                },
+                activeProperty: action.payload,
+            }
         case t.CREATE_PROPERTY_FAILURE:
-            state.errorState = action.payload;
-            break;
+            return {
+                ...state,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    addRoom: false
+                },
+                errorState: action.payload,
+            }
+        case t.CREATE_PROPERTY_ROOM:
+            return {
+                ...state,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    addRoom: true
+                },
+                errorState: null,
+            }
+        case t.CREATE_PROPERTY_ROOM_SUCCESS:
+            return {
+                ...state,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    addRoom: false
+                },
+            }
+        case t.CREATE_PROPERTY_ROOM_FAILURE:
+            return {
+                ...state,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    addRoom: false
+                },
+                errorState: action.payload,
+            }
+        case t.GET_PROPERTIES:
+            return {
+                ...state,
+                errorState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    properties: true
+                }
+            }
+        case t.GET_PROPERTIES_SUCCESS:
+            return {
+                ...state,
+                propertyList: action.payload,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    properties: false
+                }
+            }
+        case t.GET_PROPERTIES_FAILURE:
+            return {
+                ...state,
+                errorState: action.payload,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    properties: false
+                }
+            }
         case t.GET_PROPERTY_ROOMS:
-            state.errorState = null;
-            state.isLoadingState.propertyRooms = true;
-            break;
+            return {
+                ...state,
+                errorState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    propertyRooms: true
+                }
+            }
         case t.GET_PROPERTY_ROOMS_SUCCESS:
-            state.isLoadingState.propertyRooms = false;
-            state.roomList = action.payload;
-            break;
+            return {
+                ...state,
+                roomList: action.payload,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    propertyRooms: false
+                }
+            }
         case t.GET_PROPERTY_ROOMS_FAILURE:
-            state.isLoadingState.propertyRooms = false;
-            state.errorState = action.payload;
-            break;
+            return {
+                ...state,
+                errorState: action.payload,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    propertyRooms: false
+                }
+            }
+        case t.TRIGGER_CAPTURE:
+            return {
+                ...state,
+                activeBlendedImage: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    camera: true
+                }
+            }
+        case t.TRIGGER_CAPTURE_SUCCESS:
+            return {
+                ...state,
+                activeBlendedImage: action.payload,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    camera: false
+                }
+            }
+        case t.TRIGGER_CAPTURE_FAILURE:
+            return {
+                ...state,
+                errorState: action.payload,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    camera: false
+                }
+            }
         default:
             return state;
     }

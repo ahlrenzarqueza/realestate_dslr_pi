@@ -21,6 +21,26 @@ export const createPropertyFail = (error : t.IAppError) : t.ActionTypes => {
     }
 }
 
+export const getProperties = () : t.ActionTypes => {
+    return {
+        type: t.GET_PROPERTIES,
+    }
+}
+
+export const getPropertiesSuccess = (properties: t.IProperty[]) : t.ActionTypes => {
+    return {
+        type: t.GET_PROPERTIES_SUCCESS,
+        payload: properties
+    }
+}
+
+export const getPropertiesFail = (error: t.IAppError) : t.ActionTypes => {
+    return {
+        type: t.GET_PROPERTIES_FAILURE,
+        payload: error
+    }
+}
+
 export const getPropertyRooms = (id : t.IPropertyDb["id"]) : t.ActionTypes => {
     return {
         type: t.GET_PROPERTY_ROOMS,
@@ -39,6 +59,52 @@ export const getPropertyRoomsFail = (error: t.IAppError) : t.ActionTypes => {
     return {
         type: t.GET_PROPERTY_ROOMS_FAILURE,
         payload: error
+    }
+}
+
+export const setActiveProperty = (property: t.IPropertyDb) : t.ActionTypes => {
+    return {
+        type: t.SET_ACTIVE_PROPERTY,
+        payload: property
+    }
+}
+
+export const triggerCapture = (scene: 'indoor' | 'outdoor') : t.ActionTypes => {
+    return {
+        type: t.TRIGGER_CAPTURE,
+        payload: scene
+    }
+}
+
+export const triggerCaptureSuccess = (imagesrc: string) : t.ActionTypes => {
+    return {
+        type: t.TRIGGER_CAPTURE_SUCCESS,
+        payload: imagesrc,
+    }
+}
+
+export const triggerCaptureFailure = (error: t.IAppError) : t.ActionTypes => {
+    return {
+        type: t.TRIGGER_CAPTURE_FAILURE,
+        payload: error,
+    }
+}
+
+export const createPropertyRoom = () : t.ActionTypes => {
+    return {
+        type: t.CREATE_PROPERTY_ROOM,
+    }
+}
+export const createPropertyRoomSuccess = () : t.ActionTypes => {
+    return {
+        type: t.CREATE_PROPERTY_ROOM_SUCCESS,
+    }
+}
+
+export const createPropertyRoomFail = (error: t.IAppError) : t.ActionTypes => {
+    return {
+        type: t.CREATE_PROPERTY_ROOM_FAILURE,
+        payload: error,
     }
 }
 
@@ -84,9 +150,19 @@ export default {
     createProperty,
     createPropertySuccess,
     createPropertyFail,
+    getProperties,
+    getPropertiesSuccess,
+    getPropertiesFail,
     getPropertyRooms,
     getPropertyRoomsSuccess,
-    getPropertyRoomsFail
+    getPropertyRoomsFail,
+    setActiveProperty,
+    triggerCapture,
+    triggerCaptureSuccess,
+    triggerCaptureFailure,
+    createPropertyRoom,
+    createPropertyRoomSuccess,
+    createPropertyRoomFail
     // authSession,
     // authSessionSuccess,
     // authSessionFail,
