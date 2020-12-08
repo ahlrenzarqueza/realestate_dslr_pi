@@ -69,6 +69,7 @@ const PlayerContainer = styled.div<{loading: boolean}>`
   position: relative;
   width: 100%;
   padding: 2mm 4mm;
+  text-align: center;
   border: 2px solid white;
   border-radius: 2px;
   

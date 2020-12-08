@@ -1,4 +1,4 @@
-import { put, takeEvery, takeLatest, all, take, call } from 'redux-saga/effects';
+import { put, takeEvery, takeLatest, all, take, call, select } from 'redux-saga/effects';
 import { instance } from '../utils/api';
 import * as t from './types';
 import * as actions from './actions';
@@ -40,7 +40,7 @@ function* createProperty(action : t.CreatePropertyAction) {
 
 function* triggerCapture(action : t.TriggerCapture) {
   try {
-    const urlString = yield call(instance.get, `/camera/${action.payload}`);
+    const {data: urlString} = yield call(instance.get, `/camera/${action.payload}`);
     yield put(actions.triggerCaptureSuccess(urlString));
   }
   catch(e) {
@@ -48,7 +48,21 @@ function* triggerCapture(action : t.TriggerCapture) {
   }
 }
 
-
+function* createRoom(action : t.CreatePropertyRoom) {
+  try {
+    const getPropertyId = (state: t.IAppState) => (state.activeProperty ? state.activeProperty.id : '');
+    const propertyId = yield select(getPropertyId);
+    const requestData = {
+      ...action.payload,
+      propertyId
+    }
+    yield call(instance.post, `/homeproperties/${propertyId}`, requestData);
+    yield put(actions.createPropertyRoomSuccess());
+  }
+  catch(e) {
+    yield put(actions.createPropertyRoomFail(e));
+  }
+}
 
 export default function* rootSaga() {
     yield all([
@@ -58,4 +72,5 @@ export default function* rootSaga() {
     yield takeLatest(t.GET_PROPERTY_ROOMS, getPropertyRooms);
     yield takeLatest(t.CREATE_PROPERTY, createProperty);
     yield takeLatest(t.TRIGGER_CAPTURE, triggerCapture);
+    yield takeLatest(t.CREATE_PROPERTY_ROOM, createRoom);
   }

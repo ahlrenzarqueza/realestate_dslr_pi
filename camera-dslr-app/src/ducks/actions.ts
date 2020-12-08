@@ -90,9 +90,10 @@ export const triggerCaptureFailure = (error: t.IAppError) : t.ActionTypes => {
     }
 }
 
-export const createPropertyRoom = () : t.ActionTypes => {
+export const createPropertyRoom = (room: t.IPropertyRoom) : t.ActionTypes => {
     return {
         type: t.CREATE_PROPERTY_ROOM,
+        payload: room
     }
 }
 export const createPropertyRoomSuccess = () : t.ActionTypes => {

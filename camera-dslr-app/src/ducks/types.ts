@@ -167,6 +167,7 @@ export interface TriggerCaptureFailure {
 
 export interface CreatePropertyRoom {
     type: typeof CREATE_PROPERTY_ROOM,
+    payload: IPropertyRoom
 }
 
 export interface CreatePropertyRoomSuccess {

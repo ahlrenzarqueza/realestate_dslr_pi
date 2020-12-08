@@ -22,10 +22,12 @@ import React, { useEffect } from 'react';
 import { useParams, RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import placeholderimage from '../assets/room-placeholder.jpg';
+import useImage from '../utils/useImage';
 import { connect } from 'react-redux';
 import { ContentWithFooter, FooterNavButton } from '../components/ContentWithFooter';
 import { IAppState, IPropertyDb } from '../ducks/types';
 import LoaderContainer from '../components/LoaderContainer';
+import RoomCard from '../components/RoomCard';
 import actions from '../ducks/actions';
 import * as t from '../ducks/types';
 
@@ -39,6 +41,14 @@ const StyledCardList = styled(IonList)`
   ion-card {
     flex-basis: calc(50% - 6mm);
     margin: 3mm;
+  }
+
+  ion-card-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 24px;
   }
 `
 
@@ -111,21 +121,8 @@ const RoomGallery: React.FC<IProps> = ({ location, history, isLoadingState, acti
           <LoaderContainer loadingState={isLoadingState}>
             <StyledCardList>
               {roomList.map(room => (
-                 <IonCard key={room.roomId}>
-                  <IonImg src={placeholderimage}></IonImg>
-                  <IonCardHeader>
-                    <IonCardSubtitle>{room.mode == 'indoor' ? 'INDOOR' : 'OUTDOOR'} ROOM</IonCardSubtitle>
-                    <IonCardTitle>{room.name}</IonCardTitle>
-                  </IonCardHeader>
-                </IonCard>
+                <RoomCard room={room} />
               ))}
-              <IonCard>
-                <IonImg src={placeholderimage}></IonImg>
-                <IonCardHeader>
-                  <IonCardSubtitle>OUTDOOR ROOM</IonCardSubtitle>
-                  <IonCardTitle>Garden</IonCardTitle>
-                </IonCardHeader>
-              </IonCard>
             </StyledCardList>
           </LoaderContainer>
         </ContentWithFooter>

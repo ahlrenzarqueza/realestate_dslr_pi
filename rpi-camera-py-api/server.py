@@ -4,6 +4,7 @@ from flask_restful import Resource, Api
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from json import dumps
+from shutil import copy2
 import cv2
 import numpy as np
 import os
@@ -38,16 +39,22 @@ class HomeRooms(Resource):
         query = conn.execute("select * from [home-rooms] where propertyId =%d "  %int(id))
         result = {'data': [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]}
         return jsonify(result)
-    def post(self):
+    def post(self, id):
         conn = db_connect.connect()
         print(request.json)
         PropertyId = request.json['propertyId']
         Name = request.json['name']
         Mode = request.json['mode']
         Mediapath = request.json['mediapath']
-        query = conn.execute("insert into [home-properties] (propertyId, Name, Mode, Mediapath) \
-                        values('{0}','{1}',{2},{3})"
-                        .format(PropertyId, Name, Mode, Mediapath))
+        
+        dest_filename = str(PropertyId) + "~" + Name + ".jpg";
+        dest_dir = os.path.join(app.config['MEDIA_PATH'], str(PropertyId) + "/")
+        os.makedirs(dest_dir, exist_ok=True);
+        dest_filepath = os.path.join(dest_dir, dest_filename)
+        copy2(Mediapath, dest_filepath)
+        query = conn.execute("insert into [home-rooms] (propertyId, Name, Mode, Mediapath) \
+                        values({0},'{1}','{2}','{3}')"
+                        .format(PropertyId, Name, Mode, dest_filepath))
         return {'status':'success'}
 
 class StaticFileServer(Resource):
@@ -91,8 +98,9 @@ class Camera(Resource):
         exposureFusion = mergeMertens.process(images)
 
         # Save output image
-        print("Saving output ... " + id + ".jpg")
-        outputpath = os.path.join(app.config['MEDIA_PATH'], id + ".jpg")
+        print("Saving output ... temp.jpg")
+        os.makedirs(os.path.join(app.config['MEDIA_PATH'], "__tmp"), exist_ok=True)
+        outputpath = os.path.join(app.config['MEDIA_PATH'], "__tmp/temp.jpg")
         cv2.imwrite(outputpath, exposureFusion * 255)
         return outputpath
         
