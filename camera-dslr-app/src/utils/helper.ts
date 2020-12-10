@@ -15,7 +15,7 @@ export const getErrorReturn : ((code: number, exception?: any) => t.IAppError) =
         message = exception.response.data && exception.response.data.message
                     ? exception.response.data.message : exception.response.data;
     }
-    else if(exception.message.includes('Network error')) {
+    else if(exception.message.includes('Network Error')) {
         code = 0;
         message = 'Server error. Please check if Raspberry Pi server is up and running.';
     }
