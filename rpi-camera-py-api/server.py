@@ -121,7 +121,8 @@ class Camera(Resource):
 
         print("Capturing images ... ")
 
-        getFNumberString = subprocess.call('gphoto2 --get-config shutterspeed', shell=True)
+        # pkill -f gphoto2
+        subprocess.check_output(['pkill', '-f', 'gphoto2'])
 
         getShutterChoice = subprocess.check_output(["gphoto2", "--get-config", "shutterspeed"])
         getShutterChoice = str(getShutterChoice)
