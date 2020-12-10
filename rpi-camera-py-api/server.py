@@ -150,7 +150,7 @@ class Camera(Resource):
                 speed = speed + 6
 
             if noerror == False:
-                return {'status': 'error', 'message': 'Camera busy.'}, 500
+                return {'status': 'error', 'message': 'Camera busy. To fix, please restart the DSLR camera connected to Pi.'}, 500
             
         else:
             noerror = True
@@ -160,7 +160,7 @@ class Camera(Resource):
                 speed = speed + 3
 
             if noerror == False:
-                return {'status': 'error', 'message': 'Camera busy.'}, 500
+                return {'status': 'error', 'message': 'Camera busy. To fix, please restart the DSLR camera connected to Pi.'}, 500
 
         print("Reading images ... ")
   
