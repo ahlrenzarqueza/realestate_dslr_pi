@@ -22,7 +22,7 @@ export const getErrorReturn : ((code: number, exception?: any) => t.IAppError) =
 
     return {
         code,
-        message: message ? message : 'Generic error'
+        message: message ? message : exception.message
     }
 }
 
