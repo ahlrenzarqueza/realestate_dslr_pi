@@ -150,7 +150,7 @@ class Camera(Resource):
                 speed = speed + 6
 
             if noerror == False:
-                return {'status': 'error', 'message': 'Camera busy.'}
+                return {'status': 'error', 'message': 'Camera busy.'}, 500
             
         else:
             noerror = True
@@ -160,7 +160,7 @@ class Camera(Resource):
                 speed = speed + 3
 
             if noerror == False:
-                return {'status': 'error', 'message': 'Camera busy.'}
+                return {'status': 'error', 'message': 'Camera busy.'}, 500
 
         print("Reading images ... ")
   
