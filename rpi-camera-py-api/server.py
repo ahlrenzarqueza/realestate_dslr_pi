@@ -124,7 +124,13 @@ class Camera(Resource):
         # pkill -f gphoto2
         subprocess.call(['pkill', '-f', 'gphoto2'])
 
-        getShutterChoice = subprocess.check_output(["gphoto2", "--get-config", "shutterspeed"])
+        try: 
+            getShutterChoice = subprocess.check_output(["gphoto2", "--get-config", "shutterspeed"])
+        except subprocess.CalledProcessError:
+            return {'status': 'error', 'message': 'Camera problem. Please check if it is connected properly.'}, 500
+        except OSError:
+            return {'status': 'error', 'message': 'Camera problem. Please check if it is connected properly.'}, 500
+        
         getShutterChoice = str(getShutterChoice)
         
         currentIndex = getShutterChoice.index("Current: ")
