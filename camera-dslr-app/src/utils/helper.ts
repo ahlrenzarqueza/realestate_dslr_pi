@@ -7,6 +7,7 @@ export const getImageURL = (filepath: string) => {
 
 export const getErrorReturn : ((code: number, exception?: any) => t.IAppError) = (code, exception) => {
     let message;
+    console.log('Exception object', exception);
     if(exception.response) {
         code = exception.response.status;
         message = exception.response.data && exception.response.data.message
