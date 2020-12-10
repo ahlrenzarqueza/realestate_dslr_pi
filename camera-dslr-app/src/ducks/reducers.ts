@@ -3,27 +3,7 @@ import * as t from './types';
 const initialState : t.IAppState = {
     activeProperty: null,
     activeBlendedImage: null,
-    propertyList: [{
-        id: 1,
-        agentName: "John Doe",
-        address: "143 St.",
-        numOfBathrooms: 1,
-        numOfBedrooms: 1
-    },
-    {
-        id: 2,
-        agentName: "John Doe",
-        address: "456 Somewhere Rd.",
-        numOfBathrooms: 2,
-        numOfBedrooms: 3
-    },
-    {
-        id: 3,
-        agentName: "John Doe",
-        address: "789 Real Condo",
-        numOfBathrooms: 1,
-        numOfBedrooms: 4
-    }],
+    propertyList: [],
     roomList: [],
     isLoadingState: {
         addProperty: false,
@@ -120,6 +100,7 @@ export default (state = initialState, action: t.ActionTypes) => {
             return {
                 ...state,
                 errorState: action.payload,
+                propertyList: [],
                 isLoadingState: {
                     ...state.isLoadingState,
                     properties: false
@@ -148,6 +129,7 @@ export default (state = initialState, action: t.ActionTypes) => {
             return {
                 ...state,
                 errorState: action.payload,
+                roomList: [],
                 isLoadingState: {
                     ...state.isLoadingState,
                     propertyRooms: false

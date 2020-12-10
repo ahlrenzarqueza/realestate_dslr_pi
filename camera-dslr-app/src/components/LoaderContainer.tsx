@@ -13,7 +13,7 @@ const StyledSpinner = styled(IonSpinner)`
 `
 
 interface ILoaderContainerProps {
-  loadingState: boolean
+  loadingState: boolean,
 }
 
 const LoaderContainer : React.FC<ILoaderContainerProps> =  ({loadingState, ...props}) => {

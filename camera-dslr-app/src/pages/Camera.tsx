@@ -66,8 +66,12 @@ const StyledFormLabel = styled(IonLabel)`
 `
 
 const PlayerContainer = styled.div<{loading: boolean}>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 100%;
+  min-height: 30vh;
   padding: 2mm 4mm;
   text-align: center;
   border: 2px solid white;
@@ -81,6 +85,10 @@ const PlayerContainer = styled.div<{loading: boolean}>`
 
 const StyledImage = styled.img`
   max-height: 40vh;
+`
+
+const StyledCameraGuideText = styled(IonText)`
+  opacity: 0.5;
 `
 
 interface ICameraProps {
@@ -139,15 +147,9 @@ const Camera: React.FC<ICameraProps> = ({
             <PlayerContainer loading={cameraLoading}>
               {cameraLoading && <StyledSpinner name="crescent"></StyledSpinner>}
               {activeBlendedImage ?
-              <StyledImage src={getImageURL(activeBlendedImage)}></StyledImage> :
-              <MemoizedHlsPlayer key="player"
-                  url='https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
-                  autoplay={true}
-                  controls={false}
-                  muted={true}
-                  width="100%"
-                  height="auto"
-              />}
+                <StyledImage src={getImageURL(activeBlendedImage)}></StyledImage> :
+                <StyledCameraGuideText>Position and set exposure manually on the DSLR camera before capturing</StyledCameraGuideText>
+              }
             </PlayerContainer>
           </IonRow>
           <IonRow class="ion-justify-content-center">

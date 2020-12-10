@@ -31,12 +31,21 @@ import RoomCard from '../components/RoomCard';
 import actions from '../ducks/actions';
 import * as t from '../ducks/types';
 
-const StyledCardList = styled(IonList)`
+const StyledCardList = styled(IonList)<{ empty: boolean }>`
   position: relative;
   display: flex;
   height: 100%;
   align-items: flex-start;
   flex-wrap: wrap;
+
+  &:before {
+    content: '${({ empty }) => empty ? 'No rooms to show.' : ''}';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.7;
+  }
 
   ion-card {
     flex-basis: calc(50% - 6mm);
@@ -119,7 +128,7 @@ const RoomGallery: React.FC<IProps> = ({ location, history, isLoadingState, acti
             </IonButton>
           </HeaderContainer>
           <LoaderContainer loadingState={isLoadingState}>
-            <StyledCardList>
+            <StyledCardList empty={!roomList.length}>
               {roomList.map(room => (
                 <RoomCard room={room} />
               ))}

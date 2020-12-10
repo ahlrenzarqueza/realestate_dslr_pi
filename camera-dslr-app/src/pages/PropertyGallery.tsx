@@ -20,9 +20,21 @@ import LoaderContainer from '../components/LoaderContainer';
 import actions from '../ducks/actions';
 import * as t from '../ducks/types';
 
-const StyledCardList = styled(IonList)`
+const StyledCardList = styled(IonList)<{ empty: boolean }>`
   display: flex;
   flex-wrap: wrap;
+  flex-grow: 2;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  &:before {
+    content: '${({ empty }) => empty ? 'No properties to show.' : ''}';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.7;
+  }
 
   ion-card {
     width: 100%;
@@ -80,7 +92,7 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
       <IonContent>
         <ContentWithFooter ButtonComponent={BackToHomeBtn}>
           <LoaderContainer loadingState={isLoadingState}>
-            <StyledCardList>
+            <StyledCardList empty={!propertyList.length}>
               {propertyList.map((property) => 
                   <IonCard key={property.id} onClick={() => handlePropertySelect(property)}>
                     <IonCardHeader>
