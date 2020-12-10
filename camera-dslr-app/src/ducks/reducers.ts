@@ -54,6 +54,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.CREATE_PROPERTY_SUCCESS:
             return {
                 ...state,
+                errorState: null,
                 isLoadingState: {
                     ...state.isLoadingState,
                     addProperty: false
@@ -81,6 +82,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.CREATE_PROPERTY_ROOM_SUCCESS:
             return {
                 ...state,
+                errorState: null,
                 isLoadingState: {
                     ...state.isLoadingState,
                     addRoom: false
@@ -107,6 +109,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.GET_PROPERTIES_SUCCESS:
             return {
                 ...state,
+                errorState: null,
                 propertyList: action.payload,
                 isLoadingState: {
                     ...state.isLoadingState,
@@ -134,6 +137,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.GET_PROPERTY_ROOMS_SUCCESS:
             return {
                 ...state,
+                errorState: null,
                 roomList: action.payload,
                 isLoadingState: {
                     ...state.isLoadingState,
@@ -152,6 +156,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.TRIGGER_CAPTURE:
             return {
                 ...state,
+                errorState: null,
                 activeBlendedImage: null,
                 isLoadingState: {
                     ...state.isLoadingState,
@@ -161,6 +166,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.TRIGGER_CAPTURE_SUCCESS:
             return {
                 ...state,
+                errorState: null,
                 activeBlendedImage: action.payload,
                 isLoadingState: {
                     ...state.isLoadingState,

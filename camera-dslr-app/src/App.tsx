@@ -6,10 +6,12 @@ import NewProperty from './pages/NewProperty';
 import RoomGallery from './pages/RoomGallery';
 import PropertyGallery from './pages/PropertyGallery';
 import Settings from './pages/Settings'
-import React from 'react';
-import { IonApp, IonRouterOutlet, IonSplitPane, setupConfig } from '@ionic/react';
+import React, { useState, useEffect } from 'react';
+import { IonApp, IonRouterOutlet, IonSplitPane, IonToast, setupConfig } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as t from './ducks/types';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,7 +38,19 @@ setupConfig({
   mode: 'ios'
 });
 
-const App: React.FC = () => {
+interface IProps {
+  errorState: t.IAppError | null
+}
+
+const App: React.FC<IProps> = ({ errorState }) => {
+
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if(errorState != null) {
+      setShowToast(true)
+    }
+  }, [errorState])
 
   return (
     <IonApp>
@@ -55,8 +69,21 @@ const App: React.FC = () => {
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
+
+      <IonToast
+        isOpen={showToast}
+        color="danger"
+        position="top"
+        onDidDismiss={() => setShowToast(false)}
+        message={errorState ? errorState.message : ''}
+        duration={2000}
+      />
     </IonApp>
   );
 };
 
-export default App;
+const mapStateToProps = (state: t.IAppState) => ({
+  errorState: state.errorState,
+})
+
+export default connect(mapStateToProps)(App);

@@ -2,6 +2,8 @@ import { put, takeEvery, takeLatest, all, take, call, select } from 'redux-saga/
 import { instance } from '../utils/api';
 import * as t from './types';
 import * as actions from './actions';
+import { displayPartsToString } from 'typescript';
+import { getErrorReturn } from '../utils/helper';
 
 
 function* helloSaga() {
@@ -14,7 +16,7 @@ function* getProperties() {
     yield put(actions.getPropertiesSuccess(data.data));
   }
   catch(e) {
-    yield put(actions.getPropertiesFail(e));
+    yield put(actions.getPropertiesFail(getErrorReturn(500, e)));
   }
 }
 
@@ -24,7 +26,7 @@ function* getPropertyRooms(action: t.GetPropertyRoomsAction) {
     yield put(actions.getPropertyRoomsSuccess(data.data));
   }
   catch(e) {
-    yield put(actions.getPropertyRoomsSuccess(e));
+    yield put(actions.getPropertyRoomsFail(getErrorReturn(500, e)));
   }
 }
 
@@ -34,17 +36,17 @@ function* createProperty(action : t.CreatePropertyAction) {
     yield put(actions.createPropertySuccess(data.data));
   }
   catch(e) {
-    yield put(actions.createPropertyFail(e));
+    yield put(actions.createPropertyFail(getErrorReturn(500, e)));
   }
 }
 
 function* triggerCapture(action : t.TriggerCapture) {
   try {
-    const {data: urlString} = yield call(instance.get, `/camera/${action.payload}`);
-    yield put(actions.triggerCaptureSuccess(urlString));
+    const { data } = yield call(instance.get, `/camera/${action.payload}`);
+    yield put(actions.triggerCaptureSuccess(data));
   }
   catch(e) {
-    yield put(actions.triggerCaptureFailure(e));
+    yield put(actions.triggerCaptureFailure(getErrorReturn(500, e)));
   }
 }
 
@@ -60,7 +62,7 @@ function* createRoom(action : t.CreatePropertyRoom) {
     yield put(actions.createPropertyRoomSuccess());
   }
   catch(e) {
-    yield put(actions.createPropertyRoomFail(e));
+    yield put(actions.createPropertyRoomFail(getErrorReturn(500, e)));
   }
 }
 
