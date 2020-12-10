@@ -76,7 +76,7 @@ const App: React.FC<IProps> = ({ errorState }) => {
         position="top"
         onDidDismiss={() => setShowToast(false)}
         message={errorState ? errorState.message : ''}
-        duration={2000}
+        duration={5000}
       />
     </IonApp>
   );
