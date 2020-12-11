@@ -14,26 +14,36 @@ import {
 } from '@ionic/react';
 import {ContentWithFooter, FooterButton} from '../components/ContentWithFooter';
 import LoaderContainer from '../components/LoaderContainer';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
+import { usePrevious } from '../utils/helper';
 import actions from '../ducks/actions';
 import * as t from '../ducks/types';
 
 interface IComponentProps extends RouteComponentProps {
   isLoadingState: boolean,
-  createProperty: (p : t.IProperty) => t.ActionTypes
+  createProperty: (p : t.IProperty) => t.ActionTypes,
+  successState: string | null,
 }
 
 const NewProperty : React.FC<IComponentProps> = ({ 
   history, 
   createProperty,
-  isLoadingState
+  isLoadingState,
+  successState,
  } ) => {
   const [ address, setAddress ] = useState<string>('');
   const [ agentName, setAgentName ] = useState<string>('');
   const [ numOfBedrooms, setNumOfBedrooms ] = useState(0);
   const [ numOfBathrooms, setNumOfBathrooms ] = useState(0);
+
+  const refSuccessState = usePrevious(successState);
+
+  useEffect(() => {
+    if(refSuccessState !== successState && successState) 
+      return history.goBack()
+  }, [successState])
 
   const onCreate = () => {
     const property : t.IProperty = {
@@ -91,7 +101,8 @@ const NewProperty : React.FC<IComponentProps> = ({
 };
 
 const mapStateToProps = (state : t.IAppState) => ({
-  isLoadingState: state.isLoadingState.addProperty
+  isLoadingState: state.isLoadingState.addProperty,
+  successState: state.successState,
 })
 
 const mapDispatchToProps = {

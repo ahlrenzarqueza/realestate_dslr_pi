@@ -25,7 +25,7 @@ def capturecommand(shutterspeed, foldername):
     dirpath = os.path.join(app.config['MEDIA_PATH'], "__temp/" + foldername)
     os.makedirs(dirpath, exist_ok=True);
     try:
-        subprocess.check_call(["gphoto2", "--set-config", "shutterspeed=" + str(shutterspeed), "--capture-image-and-download"], cwd=dirpath)
+        subprocess.check_call(["gphoto2", "--set-config", "shutterspeed=" + str(shutterspeed), "--set-config", "imagesize=0", "--capture-image-and-download"], cwd=dirpath)
         return True
     except subprocess.CalledProcessError:
         return False
@@ -169,7 +169,7 @@ class Camera(Resource):
             speed = choiceNumber - 6
             while noerror == True and speed <= (choiceNumber + 6):
                 noerror = capturecommand(speed, captureKey)
-                speed = speed + 3
+                speed = speed + 6
 
             if noerror == False:
                 return {'status': 'error', 'message': 'Camera busy. To fix, please restart the DSLR camera connected to Pi.'}, 500
