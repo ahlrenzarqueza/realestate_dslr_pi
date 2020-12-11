@@ -9,12 +9,15 @@ export interface IPropertyDb extends IProperty {
     id: number
 }
 
-export interface IPropertyRoom {
+export interface INewPropertyRoom {
     mode: 'indoor' | 'outdoor',
     name: string,
-    propertyId?: number,
-    roomId?: number,
     mediapath: string
+}
+
+export interface IPropertyRoom extends INewPropertyRoom {
+    propertyId?: number,
+    roomId: number,
 }
 
 export interface IAppState {
@@ -174,7 +177,7 @@ export interface TriggerCaptureFailure {
 
 export interface CreatePropertyRoom {
     type: typeof CREATE_PROPERTY_ROOM,
-    payload: IPropertyRoom
+    payload: INewPropertyRoom
 }
 
 export interface CreatePropertyRoomSuccess {

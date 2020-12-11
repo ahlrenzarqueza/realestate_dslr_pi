@@ -95,7 +95,7 @@ const StyledCameraGuideText = styled(IonText)`
 interface ICameraProps extends RouteComponentProps {
   activeBlendedImage: string | null,
   triggerCapture: (scene: 'indoor' | 'outdoor') => t.ActionTypes,
-  createRoom: (room: t.IPropertyRoom) => t.ActionTypes,
+  createRoom: (room: t.INewPropertyRoom) => t.ActionTypes,
   cameraLoading: boolean,
   successState: string | null,
 }

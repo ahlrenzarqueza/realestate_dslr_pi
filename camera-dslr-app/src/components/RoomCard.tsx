@@ -8,7 +8,7 @@ import {
    IonCardSubtitle
 } from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, memo } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import placeholderimage from '../assets/room-placeholder.jpg';
@@ -36,7 +36,7 @@ const StyledButton = styled(IonButton)`
 `;
 
 interface IRoomCardProps {
-    onDelete: (n: number) => void,
+    onDelete: (room: t.IPropertyRoom) => void,
     room: t.IPropertyRoom
 }
 
@@ -48,7 +48,7 @@ const RoomCard : React.FC<IRoomCardProps> =  ({ room, onDelete }) => {
         <IonCardHeader>
             <IonCardSubtitle>{room.mode == 'indoor' ? 'INDOOR' : 'OUTDOOR'} ROOM</IonCardSubtitle>
             <IonCardTitle>{room.name}</IonCardTitle>
-            <StyledButton color="danger" size="small" onClick={() => onDelete(room.roomId ? room.roomId : 0)}>
+            <StyledButton color="danger" size="small" onClick={() => onDelete(room)}>
               <IonIcon icon={trashOutline} size="small"></IonIcon>
             </StyledButton>
         </IonCardHeader>
@@ -60,4 +60,6 @@ const mapDispatchToProps = {
     deletePropertyRoom: actions.deletePropertyRoom
 }
 
-export default connect(null, mapDispatchToProps)(RoomCard);
+export default memo(connect(null, mapDispatchToProps)(RoomCard), (prev, next) => {
+    return prev.room.roomId === next.room.roomId
+});

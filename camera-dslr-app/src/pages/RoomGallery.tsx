@@ -9,16 +9,12 @@ import {
   IonPage, 
   IonTitle, 
   IonToolbar,
-  IonCard,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardHeader,
   IonText,
-  IonImg,
+  IonAlert,
   useIonViewWillEnter
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import placeholderimage from '../assets/room-placeholder.jpg';
@@ -97,6 +93,8 @@ const RoomGallery: React.FC<IProps> = ({
   deletePropertyRoom,
 }) => {
 
+  const [deleteRoomConfirm, setDeleteRoomConfirm] = useState<any>(null);
+
   const BackToPropertiesBtn = (
     <FooterNavButton linkto="/properties" isBackMode={true} history={history} color="tertiary">Back to Properties</FooterNavButton>
   )
@@ -105,8 +103,10 @@ const RoomGallery: React.FC<IProps> = ({
     history.push('/camera');
   }
 
-  const onDelete = (roomId: number) => {
-    deletePropertyRoom(roomId);
+  const onDelete = (room: t.IPropertyRoom) => {
+    console.log('delete room:', room);
+    setDeleteRoomConfirm(room);
+    // deletePropertyRoom(room.roomId);
   }
 
   const { propertyId } = useParams<{ propertyId: string; }>();
@@ -148,6 +148,36 @@ const RoomGallery: React.FC<IProps> = ({
             </StyledCardList>
           </LoaderContainer>
         </ContentWithFooter>
+
+        {deleteRoomConfirm && 
+          <IonAlert
+            isOpen={!!deleteRoomConfirm}
+            onDidDismiss={() => setDeleteRoomConfirm(null)}
+            cssClass='my-custom-class'
+            header={'Delete Room'}
+            subHeader={''}
+            message={`Are you sure you want to delete room: ${deleteRoomConfirm.name}?`}
+            buttons={[
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                  console.log('Confirm Cancel');
+                  setDeleteRoomConfirm(null);
+                }
+              },
+              {
+                text: 'Ok',
+                handler: () => {
+                  console.log('Confirm Ok');
+                  deletePropertyRoom(deleteRoomConfirm.roomId);
+                  setDeleteRoomConfirm(null);
+                }
+              }
+            ]}
+          />
+        }
       </IonContent>
     </IonPage>
   );

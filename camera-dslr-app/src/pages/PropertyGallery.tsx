@@ -11,10 +11,12 @@ import {
   IonCardSubtitle,
   IonCardHeader,
   IonButton,
-  IonIcon
+  IonIcon,
+  IonAlert,
+  useIonViewWillEnter
 } from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
@@ -82,9 +84,11 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
   deleteProperty
  }) => {
 
-  useEffect(() => {
+  const [deletePropertyConfirm, setDeletePropertyConfirm] = useState<t.IPropertyDb | null>(null);
+
+  useIonViewWillEnter(() => {
     getProperties();
-  }, []);
+  });
 
   const BackToHomeBtn = (
     <FooterNavButton linkto="/home" isBackMode={true} history={history} color="tertiary">
@@ -93,16 +97,15 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
   )
 
   const handlePropertySelect = (property: t.IPropertyDb) => {
-    // setActiveProperty(property);
     history.push({
       pathname: `/gallery/${property.id}`,
       state: property
     });
   }
 
-  const onDelete = (e: React.MouseEvent, id: number) => {
+  const onDelete = (e: React.MouseEvent, property: t.IPropertyDb) => {
     e.stopPropagation();
-    deleteProperty(id);
+    setDeletePropertyConfirm(property);
   }
 
   return (
@@ -123,7 +126,7 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
                   <IonCard key={property.id} onClick={() => handlePropertySelect(property)}>
                     <IonCardHeader>
                       <StyledCardSubtitle>{property.address}</StyledCardSubtitle>
-                      <StyledButton color="danger" size="small" onClick={(e: React.MouseEvent) => onDelete(e, property.id)}>
+                      <StyledButton color="danger" size="small" onClick={(e: React.MouseEvent) => onDelete(e, property)}>
                         <IonIcon icon={trashOutline} size="small"></IonIcon>
                       </StyledButton>
                     </IonCardHeader>
@@ -132,6 +135,36 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
             </StyledCardList>
           </LoaderContainer>
         </ContentWithFooter>
+
+        {deletePropertyConfirm && 
+          <IonAlert
+            isOpen={deletePropertyConfirm !== null}
+            onDidDismiss={() => setDeletePropertyConfirm(null)}
+            cssClass='my-custom-class'
+            header={'Delete Property'}
+            subHeader={''}
+            message={`Are you sure you want to delete property: ${deletePropertyConfirm.address}?`}
+            buttons={[
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                  console.log('Confirm Cancel');
+                  setDeletePropertyConfirm(null);
+                }
+              },
+              {
+                text: 'Ok',
+                handler: () => {
+                  console.log('Confirm Ok');
+                  deleteProperty(deletePropertyConfirm.id);
+                  setDeletePropertyConfirm(null);
+                }
+              }
+            ]}
+          />
+        }
       </IonContent>
     </IonPage>
   );
