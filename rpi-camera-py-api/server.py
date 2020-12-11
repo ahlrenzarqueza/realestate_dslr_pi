@@ -22,6 +22,7 @@ cameraInterval = None
 
 def capturecommand(shutterspeed, foldername):
     dirpath = os.path.join(app.config['MEDIA_PATH'], "__temp/" + foldername)
+    os.makedirs(dirpath, exist_ok=True);
     try:
         subprocess.check_call(["gphoto2", "--set-config", "shutterspeed=" + str(shutterspeed), "--capture-image-and-download"], cwd=dirpath)
         return True
