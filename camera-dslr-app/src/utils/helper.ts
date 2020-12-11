@@ -2,7 +2,7 @@ import { baseURL } from './api';
 import * as t from '../ducks/types';
 
 export const getImageURL = (filepath: string) => {
-    return baseURL + '/staticfile/' + encodeURIComponent(filepath);
+    return baseURL + '/staticfile/?file=' + encodeURIComponent(filepath);
 }
 
 export const getErrorReturn : ((code: number, exception?: any) => t.IAppError) = (code, exception) => {

@@ -107,13 +107,15 @@ class HomeRooms(Resource):
         return {'status':'success'}
 
 class StaticFileServer(Resource):
-    def get(self, filedir):
+    def get(self):
+        file = request.args.get('file')
         # pathlist = filedir.split('/')
         # filename = pathlist.pop()
         # parentpath = '/'.join(pathlist)
         # print(parentpath)
         # print(filename)
-        return send_file(filedir)
+        # formatted_path = os.path.join(os.getcwd(), filedir)
+        return send_file(file)
 
 class Camera(Resource):
     def get(self, scene):
@@ -236,7 +238,7 @@ class StreamCamera(Resource):
 # api.add_resource(Employees_Name, '/employees/<employee_id>') # Route_3
 api.add_resource(HomeProperties, '/homeproperties')
 api.add_resource(HomeRooms, '/homeproperties/<id>')
-api.add_resource(StaticFileServer, '/staticfile/<path:filedir>')
+api.add_resource(StaticFileServer, '/staticfile')
 api.add_resource(Camera, '/camera/<scene>')
 api.add_resource(StreamCamera, '/stream/<enabled>')
 
