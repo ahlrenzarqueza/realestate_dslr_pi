@@ -106,15 +106,10 @@ class HomePropertyRooms(Resource):
         Name = request.json['name']
         Mode = request.json['mode']
         Mediapath = request.json['mediapath']
-        
-        # dest_filename = str(PropertyId) + "~" + Name + ".jpg";
-        # dest_dir = os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(PropertyId) + "/")
-        # os.makedirs(dest_dir, exist_ok=True);
-        # dest_filepath = os.path.join(dest_dir, dest_filename)
-        # copy2(Mediapath, dest_filepath)
+
         query = conn.execute("insert into [home-rooms] (propertyId, Name, Mode, Mediapath) \
                         values({0},'{1}','{2}','{3}')"
-                        .format(PropertyId, Name, Mode, dest_filepath))
+                        .format(PropertyId, Name, Mode, ''))
 
         rowidquery = conn.execute("select last_insert_rowid() from [home-rooms]")
         rowid = rowidquery.first().values()[0]
@@ -124,6 +119,10 @@ class HomePropertyRooms(Resource):
         os.makedirs(dest_dir, exist_ok=True);
         dest_filepath = os.path.join(dest_dir, dest_filename)
         copy2(Mediapath, dest_filepath)
+
+        updatequery = conn.execute("update [home-rooms] set mediapath = '{0}' where roomId = {1}"
+                        .format(dest_filepath, rowid))
+
         return {'status':'success'}
 
 class DeleteHomePropertyRooms(Resource):
@@ -134,7 +133,7 @@ class DeleteHomePropertyRooms(Resource):
 
         query = conn.execute("delete from [home-rooms] where roomId = %d "  %int(roomid))
 
-        dest_filename = str(roomid) + "~" + roomName + ".jpg";
+        dest_filename = str(roomid) + "~" + str(roomName) + ".jpg";
         dest_dir = os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(id) + "/")
         filepath = os.path.join(dest_dir, dest_filename)
         if os.path.exists(filepath):
