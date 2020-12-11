@@ -33,7 +33,7 @@ def capturecommand(shutterspeed, foldername):
 
 def readSampleImagesAndTimes(foldername):
     filenames = []
-    path = os.path.join(app.config['MEDIA_PATH'], foldername)
+    path = os.path.join(app.config['MEDIA_PATH'], "__temp/" + foldername)
     for file in os.listdir(path):
         if os.path.isfile(os.path.join(path, file)):
             filenames.append(os.path.join(path, file))
