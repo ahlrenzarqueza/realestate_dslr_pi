@@ -12,7 +12,8 @@ const initialState : t.IAppState = {
         camera: false,
         addRoom: false,
     },
-    errorState: null
+    errorState: null,
+    successState: null,
 }
 
 export default (state = initialState, action: t.ActionTypes) => {
@@ -35,6 +36,7 @@ export default (state = initialState, action: t.ActionTypes) => {
             return {
                 ...state,
                 errorState: null,
+                successState: 'Property successfully created.',
                 isLoadingState: {
                     ...state.isLoadingState,
                     addProperty: false
@@ -63,6 +65,7 @@ export default (state = initialState, action: t.ActionTypes) => {
             return {
                 ...state,
                 errorState: null,
+                successState: 'Room successfully created.',
                 isLoadingState: {
                     ...state.isLoadingState,
                     addRoom: false

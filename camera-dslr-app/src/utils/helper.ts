@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from 'react';
 import { baseURL } from './api';
 import * as t from '../ducks/types';
 
@@ -24,6 +25,14 @@ export const getErrorReturn : ((code: number, exception?: any) => t.IAppError) =
         code,
         message: message ? message : exception.message
     }
+}
+
+export const usePrevious = (value: any) => {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
 }
 
 export default {

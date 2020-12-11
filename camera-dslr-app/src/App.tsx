@@ -39,18 +39,27 @@ setupConfig({
 });
 
 interface IProps {
-  errorState: t.IAppError | null
+  errorState: t.IAppError | null,
+  successState: string | null,
 }
 
-const App: React.FC<IProps> = ({ errorState }) => {
+const App: React.FC<IProps> = ({ errorState, successState }) => {
 
-  const [showToast, setShowToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   useEffect(() => {
     if(errorState != null) {
-      setShowToast(true)
+      setShowErrorToast(true)
     }
   }, [errorState])
+  
+  useEffect(() => {
+    if(successState != null) {
+      setShowSuccessToast(true)
+    }
+  }, [successState])
+
 
   return (
     <IonApp>
@@ -71,11 +80,20 @@ const App: React.FC<IProps> = ({ errorState }) => {
       </IonReactRouter>
 
       <IonToast
-        isOpen={showToast}
+        isOpen={showErrorToast}
         color="danger"
         position="top"
-        onDidDismiss={() => setShowToast(false)}
+        onDidDismiss={() => setShowErrorToast(false)}
         message={errorState ? errorState.message : ''}
+        duration={5000}
+      />
+
+      <IonToast
+        isOpen={showSuccessToast}
+        color="success"
+        position="top"
+        onDidDismiss={() => setShowSuccessToast(false)}
+        message={successState ? successState : 'Success!'}
         duration={5000}
       />
     </IonApp>
@@ -84,6 +102,7 @@ const App: React.FC<IProps> = ({ errorState }) => {
 
 const mapStateToProps = (state: t.IAppState) => ({
   errorState: state.errorState,
+  successState: state.successState,
 })
 
 export default connect(mapStateToProps)(App);

@@ -29,7 +29,8 @@ export interface IAppState {
         camera: boolean,
         addRoom: boolean,
     },
-    errorState: IAppError | null
+    errorState: IAppError | null,
+    successState: string | null,
 }
 
 export interface IAppError {

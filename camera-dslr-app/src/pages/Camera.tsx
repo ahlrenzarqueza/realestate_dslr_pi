@@ -20,7 +20,7 @@ import {
   IonList,
   IonSpinner
 } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { camera } from 'ionicons/icons';
 import styled from 'styled-components';
@@ -28,7 +28,8 @@ import { ContentWithFooter, FooterButton } from '../components/ContentWithFooter
 import ReactHlsPlayer from 'react-hls-player';
 import * as t from '../ducks/types';
 import actions, { triggerCapture } from '../ducks/actions';
-import { getImageURL } from '../utils/helper';
+import { getImageURL, usePrevious } from '../utils/helper';
+import { RouteComponentProps } from 'react-router';
 
 const IonCustomGrid = styled(IonGrid)`
   display: flex;
@@ -91,24 +92,34 @@ const StyledCameraGuideText = styled(IonText)`
   opacity: 0.5;
 `
 
-interface ICameraProps {
+interface ICameraProps extends RouteComponentProps {
   activeBlendedImage: string | null,
   triggerCapture: (scene: 'indoor' | 'outdoor') => t.ActionTypes,
   createRoom: (room: t.IPropertyRoom) => t.ActionTypes,
-  cameraLoading: boolean
+  cameraLoading: boolean,
+  successState: string | null,
 }
 
 const MemoizedHlsPlayer = React.memo(ReactHlsPlayer);
 
 const Camera: React.FC<ICameraProps> = ({
+  history,
   activeBlendedImage, 
   triggerCapture, 
   cameraLoading, 
-  createRoom
+  createRoom, 
+  successState,
 }) => {
 
   const [ roomName, setRoomName ] = useState('');
   const [ scene, setScene ] = useState<'indoor' | 'outdoor'>('indoor');
+  
+  const refSuccessState = usePrevious(successState);
+
+  useEffect(() => {
+    if(refSuccessState == null && successState) 
+      return history.goBack()
+  }, [successState])
 
   const onCapture = () => {
     triggerCapture(scene);
@@ -148,7 +159,10 @@ const Camera: React.FC<ICameraProps> = ({
               {cameraLoading && <StyledSpinner name="crescent"></StyledSpinner>}
               {activeBlendedImage ?
                 <StyledImage src={getImageURL(activeBlendedImage)}></StyledImage> :
-                <StyledCameraGuideText>Position and set exposure manually on the DSLR camera before capturing</StyledCameraGuideText>
+                (cameraLoading ?
+                  <StyledCameraGuideText>Capturing and blending... This could take several minutes.</StyledCameraGuideText> :
+                  <StyledCameraGuideText>Position and set exposure manually on the DSLR camera before capturing</StyledCameraGuideText>
+                )
               }
             </PlayerContainer>
           </IonRow>
@@ -187,11 +201,12 @@ const Camera: React.FC<ICameraProps> = ({
 const mapStateToProps = (state: t.IAppState) => ({
   activeBlendedImage: state.activeBlendedImage,
   cameraLoading: state.isLoadingState.camera, 
+  successState: state.successState,
 });
 
 const mapDispatchToProps = {
   triggerCapture: actions.triggerCapture,
-  createRoom: actions.createPropertyRoom
+  createRoom: actions.createPropertyRoom,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Camera);
