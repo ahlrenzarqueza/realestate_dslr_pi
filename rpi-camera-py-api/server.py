@@ -106,6 +106,17 @@ class HomeRooms(Resource):
                         values({0},'{1}','{2}','{3}')"
                         .format(PropertyId, Name, Mode, dest_filepath))
         return {'status':'success'}
+    def delete(self, id):
+        conn = db_connect.connect()
+        query = conn.execute("select propertyId from [home-rooms] where roomId =%d "  %int(id))
+        propertyId = query.first().values()[0]
+
+        query = conn.execute("delete from [home-rooms] where roomId = %d "  %int(id))
+
+        filepath =  os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(propertyId) + "/" + str(id) + ".jpg")
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        return {'status':'success'}
 
 class StaticFileServer(Resource):
     def get(self):
@@ -174,7 +185,7 @@ class Camera(Resource):
             if noerror == False:
                 return {'status': 'error', 'message': 'Camera busy. To fix, please restart the DSLR camera connected to Pi.'}, 500
 
-        subprocess.check_output(["gphoto2", "--set-config", "shutterspeed=" + choiceNumber])
+        subprocess.check_output(["gphoto2", "--set-config", "shutterspeed=" + str(choiceNumber)])
         print("Reading images ... ")
   
         images = readSampleImagesAndTimes(captureKey)
