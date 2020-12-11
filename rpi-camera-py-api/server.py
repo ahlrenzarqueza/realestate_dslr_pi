@@ -11,6 +11,7 @@ import os
 import time, threading
 import subprocess
 import time
+import urllib.parse
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 db_connect = create_engine('sqlite:///realestate-dslr.db')
@@ -115,7 +116,8 @@ class StaticFileServer(Resource):
         # print(parentpath)
         # print(filename)
         # formatted_path = os.path.join(os.getcwd(), filedir)
-        return send_file(file)
+        decodedfilepath = urllib.parse.unquote(file)
+        return send_file(decodedfilepath)
 
 class Camera(Resource):
     def get(self, scene):
