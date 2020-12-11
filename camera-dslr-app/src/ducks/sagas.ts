@@ -66,6 +66,28 @@ function* createRoom(action : t.CreatePropertyRoom) {
   }
 }
 
+function* deleteProperty(action: t.DeleteProperty) {
+  try {
+    yield call(instance.delete, `/homeproperties/delete/${action.payload}`);
+    yield put(actions.deletePropertySuccess(action.payload));
+  }
+  catch(e) {
+    yield put(actions.deletePropertyFail(getErrorReturn(500, e)));
+  }
+}
+
+function* deletePropertyRoom(action: t.DeletePropertyRoom) {
+  try {
+    const getPropertyId = (state: t.IAppState) => (state.activeProperty ? state.activeProperty.id : '');
+    const propertyId = yield select(getPropertyId);
+    yield call(instance.delete, `/homeproperties/delete/${propertyId}/${action.payload}`);
+    yield put(actions.deletePropertyRoomSuccess(action.payload));
+  }
+  catch(e) {
+    yield put(actions.deletePropertyRoomFail(getErrorReturn(500, e)));
+  }
+}
+
 export default function* rootSaga() {
     yield all([
       helloSaga()
@@ -75,4 +97,6 @@ export default function* rootSaga() {
     yield takeLatest(t.CREATE_PROPERTY, createProperty);
     yield takeLatest(t.TRIGGER_CAPTURE, triggerCapture);
     yield takeLatest(t.CREATE_PROPERTY_ROOM, createRoom);
+    yield takeLatest(t.DELETE_PROPERTY, deleteProperty);
+    yield takeLatest(t.DELETE_PROPERTY_ROOM, deletePropertyRoom);
   }

@@ -33,7 +33,7 @@ const Settings : React.FC<RouteComponentProps> = ({ history }) => {
         <ContentWithFooter ButtonComponent={BackToHomeBtn}>
           <IonList>
             <IonItem detail={true}>
-              <IonLabel>Format Memory Stick</IonLabel>
+              <IonLabel>Delete All Data</IonLabel>
             </IonItem>
           </IonList>
         </ContentWithFooter>

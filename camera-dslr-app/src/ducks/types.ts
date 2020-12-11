@@ -63,6 +63,12 @@ export const TRIGGER_CAPTURE_FAILURE = 'TRIGGER_CAPTURE_FAILURE';
 export const CREATE_PROPERTY_ROOM = 'CREATE_PROPERTY_ROOM';
 export const CREATE_PROPERTY_ROOM_SUCCESS = 'CREATE_PROPERTY_ROOM_SUCCESS';
 export const CREATE_PROPERTY_ROOM_FAILURE = 'CREATE_PROPERTY_ROOM_FAILURE';
+export const DELETE_PROPERTY = 'DELETE_PROPERTY';
+export const DELETE_PROPERTY_SUCCESS = 'DELETE_PROPERTY_SUCCESS';
+export const DELETE_PROPERTY_FAILURE = 'DELETE_PROPERTY_FAILURE';
+export const DELETE_PROPERTY_ROOM = 'DELETE_PROPERTY_ROOM';
+export const DELETE_PROPERTY_ROOM_SUCCESS = 'DELETE_PROPERTY_ROOM_SUCCESS';
+export const DELETE_PROPERTY_ROOM_FAILURE = 'DELETE_PROPERTY_ROOM_FAILURE';
 // export const AUTH_SESSION = 'AUTH_SESSION';
 // export const AUTH_SESSION_SUCCESS = 'AUTH_SESSION_SUCCESS';
 // export const AUTH_SESSION_FAILURE = 'AUTH_SESSION_FAILURE';
@@ -180,6 +186,36 @@ export interface CreatePropertyRoomFail {
     payload: IAppError,
 }
 
+export interface DeleteProperty {
+    type: typeof DELETE_PROPERTY,
+    payload: number
+}
+
+export interface DeletePropertySuccess {
+    type: typeof DELETE_PROPERTY_SUCCESS,
+    payload: number,
+}
+
+export interface DeletePropertyFail {
+    type: typeof DELETE_PROPERTY_FAILURE,
+    payload: IAppError,
+}
+
+export interface DeletePropertyRoom {
+    type: typeof DELETE_PROPERTY_ROOM,
+    payload: number
+}
+
+export interface DeletePropertyRoomSuccess {
+    type: typeof DELETE_PROPERTY_ROOM_SUCCESS,
+    payload: number
+}
+
+export interface DeletePropertyRoomFail {
+    type: typeof DELETE_PROPERTY_ROOM_FAILURE,
+    payload: IAppError,
+}
+
 export type ActionTypes = 
 CreatePropertyAction |
 CreatePropertySuccessAction |
@@ -196,7 +232,13 @@ TriggerCaptureSuccess |
 TriggerCaptureFailure |
 CreatePropertyRoom |
 CreatePropertyRoomSuccess |
-CreatePropertyRoomFail
+CreatePropertyRoomFail |
+DeleteProperty |
+DeletePropertySuccess |
+DeletePropertyFail |
+DeletePropertyRoom |
+DeletePropertyRoomSuccess |
+DeletePropertyRoomFail
 // | AuthenticateSuccessAction
 // | AuthenticateFailureAction
 // | LoginAction

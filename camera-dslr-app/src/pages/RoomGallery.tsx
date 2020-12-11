@@ -55,7 +55,7 @@ const StyledCardList = styled(IonList)<{ empty: boolean }>`
   ion-card-title {
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 100%;
+    max-width: calc(100% - 30px);
     overflow: hidden;
     font-size: 24px;
   }
@@ -83,10 +83,19 @@ interface IProps extends RouteComponentProps {
   roomList: t.IPropertyRoom[],
   getPropertyRooms: (id: t.IPropertyDb["id"]) => t.ActionTypes,
   setActiveProperty: (p: t.IPropertyDb) => t.ActionTypes,
+  deletePropertyRoom: (n: number) => t.ActionTypes,
 }
 
-const RoomGallery: React.FC<IProps> = ({ location, history, isLoadingState, activeProperty, roomList, getPropertyRooms,
-  setActiveProperty }) => {
+const RoomGallery: React.FC<IProps> = ({ 
+  location, 
+  history, 
+  isLoadingState, 
+  activeProperty, 
+  roomList, 
+  getPropertyRooms,
+  setActiveProperty,
+  deletePropertyRoom,
+}) => {
 
   const BackToPropertiesBtn = (
     <FooterNavButton linkto="/properties" isBackMode={true} history={history} color="tertiary">Back to Properties</FooterNavButton>
@@ -94,6 +103,10 @@ const RoomGallery: React.FC<IProps> = ({ location, history, isLoadingState, acti
 
   const onAddRoom = () => {
     history.push('/camera');
+  }
+
+  const onDelete = (roomId: number) => {
+    deletePropertyRoom(roomId);
   }
 
   const { propertyId } = useParams<{ propertyId: string; }>();
@@ -130,7 +143,7 @@ const RoomGallery: React.FC<IProps> = ({ location, history, isLoadingState, acti
           <LoaderContainer loadingState={isLoadingState}>
             <StyledCardList empty={!roomList.length}>
               {roomList.map(room => (
-                <RoomCard room={room} />
+                <RoomCard room={room} onDelete={onDelete} />
               ))}
             </StyledCardList>
           </LoaderContainer>
@@ -149,6 +162,7 @@ const mapStateToProps = ({ isLoadingState, activeProperty, roomList } : IAppStat
 const mapDispatchToProps = {
   getPropertyRooms: actions.getPropertyRooms,
   setActiveProperty: actions.setActiveProperty,
+  deletePropertyRoom: actions.deletePropertyRoom,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomGallery);

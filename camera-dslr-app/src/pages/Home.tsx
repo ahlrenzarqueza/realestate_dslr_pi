@@ -9,8 +9,10 @@ import {
   IonPage, 
   IonTitle, 
   IonToolbar,
-  IonText
+  IonText,
+  IonIcon
 } from '@ionic/react';
+import { home as HomeIcon } from 'ionicons/icons';
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
@@ -27,6 +29,10 @@ const IonCustomGrid = styled(IonGrid)`
 const IonBlockButton = styled(IonButton)`
   width: 100%;
   margin: 2mm;
+`
+
+const StyledIonIcon = styled(IonIcon)`
+  font-size: 64px;
 `
 
 const Home = ({ history } : RouteComponentProps ) => {
@@ -49,7 +55,7 @@ const Home = ({ history } : RouteComponentProps ) => {
       <IonContent>
         <IonCustomGrid>
           <IonRow class="ion-justify-content-center ion-align-items-center" style={{flexGrow: '3'}}>
-            <IonText>Logo Here</IonText>
+            <StyledIonIcon icon={HomeIcon} />
           </IonRow>
           <IonRow>
             <IonBlockButton color="primary" expand="block" onClick={(e: React.MouseEvent) => navigateTo(e, '/addproperty')}>New Property</IonBlockButton>

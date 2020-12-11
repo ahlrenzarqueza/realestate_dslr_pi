@@ -109,6 +109,48 @@ export const createPropertyRoomFail = (error: t.IAppError) : t.ActionTypes => {
     }
 }
 
+export const deleteProperty = (id: number) : t.ActionTypes => {
+    return {
+        type: t.DELETE_PROPERTY,
+        payload: id,
+    }
+}
+
+export const deletePropertySuccess = (id: number) : t.ActionTypes => {
+    return {
+        type: t.DELETE_PROPERTY_SUCCESS,
+        payload: id,
+    }
+}
+
+export const deletePropertyFail = (error: t.IAppError) : t.ActionTypes => {
+    return {
+        type: t.DELETE_PROPERTY_FAILURE,
+        payload: error
+    }
+}
+
+export const deletePropertyRoom = (id: number) : t.ActionTypes => {
+    return {
+        type: t.DELETE_PROPERTY_ROOM,
+        payload: id,
+    }
+}
+
+export const deletePropertyRoomSuccess = (id: number) : t.ActionTypes => {
+    return {
+        type: t.DELETE_PROPERTY_ROOM_SUCCESS,
+        payload: id,
+    }
+}
+
+export const deletePropertyRoomFail = (error: t.IAppError) : t.ActionTypes => {
+    return {
+        type: t.DELETE_PROPERTY_ROOM_FAILURE,
+        payload: error
+    }
+}
+
 // export const authSessionSuccess = (loggedInUser: t.ILoggedInUser) : t.ActionTypes => {
 //     return {
 //         type: t.AUTH_SESSION_SUCCESS,
@@ -163,7 +205,13 @@ export default {
     triggerCaptureFailure,
     createPropertyRoom,
     createPropertyRoomSuccess,
-    createPropertyRoomFail
+    createPropertyRoomFail,
+    deleteProperty,
+    deletePropertySuccess,
+    deletePropertyFail,
+    deletePropertyRoom,
+    deletePropertyRoomSuccess,
+    deletePropertyRoomFail,
     // authSession,
     // authSessionSuccess,
     // authSessionFail,

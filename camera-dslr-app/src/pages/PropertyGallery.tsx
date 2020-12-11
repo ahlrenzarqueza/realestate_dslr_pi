@@ -9,8 +9,11 @@ import {
   IonToolbar,
   IonCard,
   IonCardSubtitle,
-  IonCardHeader
+  IonCardHeader,
+  IonButton,
+  IonIcon
 } from '@ionic/react';
+import { trashOutline } from 'ionicons/icons';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
@@ -43,14 +46,31 @@ const StyledCardList = styled(IonList)<{ empty: boolean }>`
 `
 
 const StyledCardSubtitle = styled(IonCardSubtitle)`
+  max-width: calc(100% - 30px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   color: var(--ion-text-color);
 `
+
+const StyledButton = styled(IonButton)`
+    position: absolute;
+    top: 6px;
+    right: 10px;
+
+    &::part(native) {
+        padding: 7px;
+        width: 30px;
+        height: 30px;
+    }
+`;
 
 interface IPropertyGalleryProps extends RouteComponentProps {
   propertyList: t.IPropertyDb[],
   isLoadingState: boolean,
   getProperties: () => t.ActionTypes,
   setActiveProperty: (p: t.IPropertyDb) => t.ActionTypes,
+  deleteProperty: (id: number) => t.ActionTypes,
 }
 
 const PropertyGallery: React.FC<IPropertyGalleryProps> = ({ 
@@ -58,7 +78,8 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
   propertyList, 
   isLoadingState,
   getProperties,
-  setActiveProperty
+  setActiveProperty,
+  deleteProperty
  }) => {
 
   useEffect(() => {
@@ -79,6 +100,11 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
     });
   }
 
+  const onDelete = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    deleteProperty(id);
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -97,6 +123,9 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
                   <IonCard key={property.id} onClick={() => handlePropertySelect(property)}>
                     <IonCardHeader>
                       <StyledCardSubtitle>{property.address}</StyledCardSubtitle>
+                      <StyledButton color="danger" size="small" onClick={(e: React.MouseEvent) => onDelete(e, property.id)}>
+                        <IonIcon icon={trashOutline} size="small"></IonIcon>
+                      </StyledButton>
                     </IonCardHeader>
                   </IonCard>
               )}
@@ -115,7 +144,8 @@ const mapStateToProps = ({ propertyList, isLoadingState } : t.IAppState) => ({
 
 const mapDispatchToProps = {
   getProperties: actions.getProperties,
-  setActiveProperty: actions.setActiveProperty
+  setActiveProperty: actions.setActiveProperty,
+  deleteProperty: actions.deleteProperty,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PropertyGallery);

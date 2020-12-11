@@ -56,6 +56,7 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.CREATE_PROPERTY_ROOM:
             return {
                 ...state,
+                activeBlendedImage: null,
                 isLoadingState: {
                     ...state.isLoadingState,
                     addRoom: true
@@ -164,10 +165,79 @@ export default (state = initialState, action: t.ActionTypes) => {
         case t.TRIGGER_CAPTURE_FAILURE:
             return {
                 ...state,
+                activeBlendedImage: null,
                 errorState: action.payload,
                 isLoadingState: {
                     ...state.isLoadingState,
                     camera: false
+                }
+            }
+        case t.DELETE_PROPERTY:
+            return {
+                ...state,
+                errorState: null,
+                successState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    properties: true
+                }
+            }
+        case t.DELETE_PROPERTY_SUCCESS:
+            const properties = [...state.propertyList];
+            const propIndex = properties.findIndex((e) => e.id == action.payload);
+            properties.splice(propIndex, 1);
+            return {
+                ...state,
+                errorState: null,
+                successState: 'Property successfully deleted',
+                propertyList: properties,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    properties: false
+                }
+            }
+        case t.DELETE_PROPERTY_FAILURE:
+            return {
+                ...state,
+                errorState: action.payload,
+                successState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    properties: false
+                }
+            }
+        case t.DELETE_PROPERTY_ROOM:
+            return {
+                ...state,
+                errorState: null,
+                successState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    propertyRooms: true
+                }
+            }
+        case t.DELETE_PROPERTY_ROOM_SUCCESS:
+            const rooms = [...state.roomList]
+            const propRoomIndex = rooms.findIndex((e) => e.roomId === action.payload)
+            rooms.splice(propRoomIndex, 1)
+            return {
+                ...state,
+                errorState: null,
+                successState: 'Property room successfully deleted',
+                roomList: rooms,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    propertyRooms: false
+                }
+            }
+        case t.DELETE_PROPERTY_ROOM_FAILURE:
+            return {
+                ...state,
+                errorState: action.payload,
+                successState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    propertyRooms: false
                 }
             }
         default:

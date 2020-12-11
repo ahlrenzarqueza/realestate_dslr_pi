@@ -4,7 +4,7 @@ from flask_restful import Resource, Api
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from json import dumps
-from shutil import copy2
+from shutil import copy2, rmtree
 import cv2
 import numpy as np
 import os
@@ -83,7 +83,17 @@ class HomeProperties(Resource):
                         .format(Address, AgentName, BedroomCount, BathroomCount))
         return {'status':'success'}
 
-class HomeRooms(Resource):
+class DeleteHomeProperty(Resource):
+    def delete(self, id):
+        conn = db_connect.connect()
+        query = conn.execute("delete from [home-properties] where id = %d "  %int(id))
+
+        dirpath =  os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(id))
+        if os.path.exists(dirpath):
+            rmtree(dirpath)
+        return {'status':'success'}
+
+class HomePropertyRooms(Resource):
     def get(self, id):
         conn = db_connect.connect()
         query = conn.execute("select * from [home-rooms] where propertyId =%d "  %int(id))
@@ -106,14 +116,16 @@ class HomeRooms(Resource):
                         values({0},'{1}','{2}','{3}')"
                         .format(PropertyId, Name, Mode, dest_filepath))
         return {'status':'success'}
-    def delete(self, id):
+
+class DeleteHomePropertyRooms(Resource):
+    def delete(self, id, roomid):
         conn = db_connect.connect()
-        query = conn.execute("select propertyId from [home-rooms] where roomId =%d "  %int(id))
-        propertyId = query.first().values()[0]
+        # query = conn.execute("select propertyId from [home-rooms] where roomId =%d "  %int(roomid))
+        # propertyId = query.first().values()[0]
 
-        query = conn.execute("delete from [home-rooms] where roomId = %d "  %int(id))
+        query = conn.execute("delete from [home-rooms] where roomId = %d "  %int(roomid))
 
-        filepath =  os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(propertyId) + "/" + str(id) + ".jpg")
+        filepath =  os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(id) + "/" + str(roomid) + ".jpg")
         if os.path.exists(filepath):
             os.remove(filepath)
         return {'status':'success'}
@@ -250,8 +262,11 @@ class StreamCamera(Resource):
 # api.add_resource(Employees, '/employees') # Route_1
 # api.add_resource(Tracks, '/tracks') # Route_2
 # api.add_resource(Employees_Name, '/employees/<employee_id>') # Route_3
+# api.add_resource(HomeProperties, '/homeproperties')
 api.add_resource(HomeProperties, '/homeproperties')
-api.add_resource(HomeRooms, '/homeproperties/<id>')
+api.add_resource(DeleteHomeProperty, '/homeproperties/delete/<id>')
+api.add_resource(HomePropertyRooms, '/homeproperties/<id>')
+api.add_resource(DeleteHomePropertyRooms, '/homeproperties/delete/<id>/<roomid>')
 api.add_resource(StaticFileServer, '/staticfile')
 api.add_resource(Camera, '/camera/<scene>')
 api.add_resource(StreamCamera, '/stream/<enabled>')
