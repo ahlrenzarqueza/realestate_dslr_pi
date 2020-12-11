@@ -107,25 +107,36 @@ class HomePropertyRooms(Resource):
         Mode = request.json['mode']
         Mediapath = request.json['mediapath']
         
-        dest_filename = str(PropertyId) + "~" + Name + ".jpg";
+        # dest_filename = str(PropertyId) + "~" + Name + ".jpg";
+        # dest_dir = os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(PropertyId) + "/")
+        # os.makedirs(dest_dir, exist_ok=True);
+        # dest_filepath = os.path.join(dest_dir, dest_filename)
+        # copy2(Mediapath, dest_filepath)
+        query = conn.execute("insert into [home-rooms] (propertyId, Name, Mode, Mediapath) \
+                        values({0},'{1}','{2}','{3}')"
+                        .format(PropertyId, Name, Mode, dest_filepath))
+
+        rowidquery = conn.execute("select last_insert_rowid() from [home-rooms]")
+        rowid = rowidquery.first().values()[0]
+
+        dest_filename = str(rowid) + "~" + Name + ".jpg"
         dest_dir = os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(PropertyId) + "/")
         os.makedirs(dest_dir, exist_ok=True);
         dest_filepath = os.path.join(dest_dir, dest_filename)
         copy2(Mediapath, dest_filepath)
-        query = conn.execute("insert into [home-rooms] (propertyId, Name, Mode, Mediapath) \
-                        values({0},'{1}','{2}','{3}')"
-                        .format(PropertyId, Name, Mode, dest_filepath))
         return {'status':'success'}
 
 class DeleteHomePropertyRooms(Resource):
     def delete(self, id, roomid):
         conn = db_connect.connect()
-        # query = conn.execute("select propertyId from [home-rooms] where roomId =%d "  %int(roomid))
-        # propertyId = query.first().values()[0]
+        query = conn.execute("select name from [home-rooms] where roomId =%d "  %int(roomid))
+        roomName = query.first().values()[0]
 
         query = conn.execute("delete from [home-rooms] where roomId = %d "  %int(roomid))
 
-        filepath =  os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(id) + "/" + str(roomid) + ".jpg")
+        dest_filename = str(roomid) + "~" + roomName + ".jpg";
+        dest_dir = os.path.join(app.config['MEDIA_PATH'], "final-blended/" + str(id) + "/")
+        filepath = os.path.join(dest_dir, dest_filename)
         if os.path.exists(filepath):
             os.remove(filepath)
         return {'status':'success'}
