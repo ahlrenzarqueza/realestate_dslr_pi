@@ -155,7 +155,7 @@ class Camera(Resource):
         if scene == 'outdoor':
             noerror = True
             speed = choiceNumber - 6
-            while noerror == True and speed != (choiceNumber + 6):
+            while noerror == True and speed <= (choiceNumber + 6):
                 noerror = capturecommand(speed, captureKey)
                 speed = speed + 6
 
@@ -165,7 +165,7 @@ class Camera(Resource):
         else:
             noerror = True
             speed = choiceNumber - 6
-            while noerror == True and speed != (choiceNumber + 6):
+            while noerror == True and speed <= (choiceNumber + 6):
                 noerror = capturecommand(speed, captureKey)
                 speed = speed + 3
 
