@@ -119,7 +119,7 @@ const Camera: React.FC<ICameraProps> = ({
   useEffect(() => {
     console.log('Previous Success State: ', refSuccessState);
     console.log('Current Success State: ', successState);
-    if(refSuccessState !== successState && successState) 
+    if(refSuccessState === null && successState) 
       return history.goBack()
   }, [successState])
 

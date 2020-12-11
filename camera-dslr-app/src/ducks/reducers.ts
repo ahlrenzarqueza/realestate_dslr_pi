@@ -31,6 +31,7 @@ export default (state = initialState, action: t.ActionTypes) => {
                     addProperty: true
                 },
                 errorState: null,
+                successState: null,
             }
         case t.CREATE_PROPERTY_SUCCESS:
             return {
@@ -60,6 +61,7 @@ export default (state = initialState, action: t.ActionTypes) => {
                     addRoom: true
                 },
                 errorState: null,
+                successState: null,
             }
         case t.CREATE_PROPERTY_ROOM_SUCCESS:
             return {
@@ -84,6 +86,7 @@ export default (state = initialState, action: t.ActionTypes) => {
             return {
                 ...state,
                 errorState: null,
+                successState: null,
                 isLoadingState: {
                     ...state.isLoadingState,
                     properties: true

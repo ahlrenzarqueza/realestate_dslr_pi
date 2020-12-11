@@ -41,7 +41,7 @@ const NewProperty : React.FC<IComponentProps> = ({
   const refSuccessState = usePrevious(successState);
 
   useEffect(() => {
-    if(refSuccessState !== successState && successState) 
+    if(refSuccessState === null && successState) 
       return history.goBack()
   }, [successState])
 

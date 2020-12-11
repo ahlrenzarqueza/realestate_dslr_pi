@@ -174,6 +174,7 @@ class Camera(Resource):
             if noerror == False:
                 return {'status': 'error', 'message': 'Camera busy. To fix, please restart the DSLR camera connected to Pi.'}, 500
 
+        subprocess.check_output(["gphoto2", "--set-config", "shutterspeed=" + choiceNumber])
         print("Reading images ... ")
   
         images = readSampleImagesAndTimes(captureKey)
