@@ -25,6 +25,7 @@ interface IComponentProps extends RouteComponentProps {
   isLoadingState: boolean,
   createProperty: (p : t.IProperty) => t.ActionTypes,
   successState: string | null,
+  activeProperty: t.IPropertyDb | null,
 }
 
 const NewProperty : React.FC<IComponentProps> = ({ 
@@ -32,6 +33,7 @@ const NewProperty : React.FC<IComponentProps> = ({
   createProperty,
   isLoadingState,
   successState,
+  activeProperty
  } ) => {
   const [ address, setAddress ] = useState<string>('');
   const [ agentName, setAgentName ] = useState<string>('');
@@ -41,8 +43,9 @@ const NewProperty : React.FC<IComponentProps> = ({
   const refSuccessState = usePrevious(successState);
 
   useEffect(() => {
+    if(!activeProperty) return;
     if(refSuccessState === null && successState) 
-      return history.goBack()
+      return history.push(`/gallery/${activeProperty.id}`)
   }, [successState])
 
   const onCreate = () => {
@@ -103,6 +106,7 @@ const NewProperty : React.FC<IComponentProps> = ({
 const mapStateToProps = (state : t.IAppState) => ({
   isLoadingState: state.isLoadingState.addProperty,
   successState: state.successState,
+  activeProperty: state.activeProperty,
 })
 
 const mapDispatchToProps = {

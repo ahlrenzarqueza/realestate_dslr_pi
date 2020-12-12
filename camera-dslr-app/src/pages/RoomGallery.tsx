@@ -112,10 +112,10 @@ const RoomGallery: React.FC<IProps> = ({
   const { propertyId } = useParams<{ propertyId: string; }>();
 
   useIonViewWillEnter(() => {
-    if(!location.state) {
+    if(!location.state && !activeProperty) {
       history.push('/properties');
     }
-    setActiveProperty(location.state as t.IPropertyDb);
+    if(!activeProperty) setActiveProperty(location.state as t.IPropertyDb);
     getPropertyRooms(parseInt(propertyId));
   });
 

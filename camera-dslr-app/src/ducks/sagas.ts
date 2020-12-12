@@ -33,7 +33,11 @@ function* getPropertyRooms(action: t.GetPropertyRoomsAction) {
 function* createProperty(action : t.CreatePropertyAction) {
   try {
     const { data } = yield call(instance.post, '/homeproperties', action.payload);
-    yield put(actions.createPropertySuccess(data.data));
+    const propertyDb = {
+      ...action.payload,
+      id: data.id,
+    }
+    yield put(actions.createPropertySuccess(propertyDb));
   }
   catch(e) {
     yield put(actions.createPropertyFail(getErrorReturn(500, e)));

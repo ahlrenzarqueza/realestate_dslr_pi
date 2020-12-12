@@ -81,7 +81,9 @@ class HomeProperties(Resource):
         query = conn.execute("insert into [home-properties] (address, agentName, bedroomCount, bathroomCount) \
                         values('{0}','{1}',{2},{3})"
                         .format(Address, AgentName, BedroomCount, BathroomCount))
-        return {'status':'success'}
+        rowidquery = conn.execute("select last_insert_rowid() from [home-properties]")
+        rowid = rowidquery.first().values()[0]
+        return {'status':'success', 'id': int(rowid)}
 
 class DeleteHomeProperty(Resource):
     def delete(self, id):
