@@ -85,6 +85,7 @@ const App: React.FC<IProps> = ({ errorState, successState }) => {
         position="top"
         onDidDismiss={() => setShowErrorToast(false)}
         message={errorState ? errorState.message : ''}
+        buttons={['Close']}
         duration={5000}
       />
 
@@ -94,6 +95,7 @@ const App: React.FC<IProps> = ({ errorState, successState }) => {
         position="top"
         onDidDismiss={() => setShowSuccessToast(false)}
         message={successState ? successState : 'Success!'}
+        buttons={['Close']}
         duration={5000}
       />
     </IonApp>

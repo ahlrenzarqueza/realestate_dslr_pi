@@ -11,6 +11,7 @@ const initialState : t.IAppState = {
         propertyRooms: false,
         camera: false,
         addRoom: false,
+        deleteAll: false,
     },
     errorState: null,
     successState: null,
@@ -238,6 +239,34 @@ export default (state = initialState, action: t.ActionTypes) => {
                 isLoadingState: {
                     ...state.isLoadingState,
                     propertyRooms: false
+                }
+            }
+        case t.DELETE_ALL:
+            return {
+                ...state,
+                successState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    deleteAll: true
+                }
+            }
+        case t.DELETE_ALL_SUCCESS:
+            return {
+                ...state,
+                successState: 'Successfully deleted all data',
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    deleteAll: false
+                }
+            }
+        case t.DELETE_ALL_FAILURE:
+            return {
+                ...state,
+                errorState: action.payload,
+                successState: null,
+                isLoadingState: {
+                    ...state.isLoadingState,
+                    deleteAll: false
                 }
             }
         default:

@@ -8,16 +8,39 @@ import {
   IonToolbar,
   IonLabel,
   IonItem,
-  IonList
+  IonList,
+  IonSpinner,
+  IonIcon,
+  IonAlert,
 } from '@ionic/react';
-import React from 'react';
+import { trashBin } from 'ionicons/icons'
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { ContentWithFooter, FooterNavButton } from '../components/ContentWithFooter';
 import { RouteComponentProps } from 'react-router-dom';
+import { ActionTypes, IAppState } from '../ducks/types';
+import { deleteAll } from '../ducks/actions';
 
-const Settings : React.FC<RouteComponentProps> = ({ history }) => {
+interface SettingsProps extends RouteComponentProps {
+  deleteAllLoading: boolean,
+  dispatch: (a: ActionTypes) => void
+}
+
+const Settings : React.FC<SettingsProps> = ({ 
+  history, 
+  deleteAllLoading,
+  dispatch,
+}) => {
+
+  const [deleteAllConfirm, setDeleteAllConfirm] = useState<boolean>(false);
+
   const BackToHomeBtn = (
     <FooterNavButton linkto="/home" isBackMode={true} history={history}>Back to Home</FooterNavButton>
   )
+
+  const onDeleteAllConfirm = () => {
+    dispatch(deleteAll());
+  }
 
   return (
     <IonPage>
@@ -32,14 +55,53 @@ const Settings : React.FC<RouteComponentProps> = ({ history }) => {
       <IonContent>
         <ContentWithFooter ButtonComponent={BackToHomeBtn}>
           <IonList>
-            <IonItem detail={true}>
+            <IonItem button onClick={() => setDeleteAllConfirm(true)}>
+              {deleteAllLoading ?
+                <IonSpinner slot="start" name="crescent"></IonSpinner> :
+                <IonIcon slot="start" icon={trashBin} size="small"></IonIcon>
+              }
               <IonLabel>Delete All Data</IonLabel>
             </IonItem>
           </IonList>
         </ContentWithFooter>
+
+        {deleteAllConfirm && 
+          <IonAlert
+            isOpen={deleteAllConfirm}
+            onDidDismiss={() => setDeleteAllConfirm(false)}
+            cssClass='my-custom-class'
+            header={'Delete ALL Data'}
+            subHeader={''}
+            message={`This will delete ALL property data and images, including unblended ones in the media path.
+                      Are you sure you want to continue?`}
+            buttons={[
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+                handler: () => {
+                  console.log('Confirm Cancel');
+                  setDeleteAllConfirm(false);
+                }
+              },
+              {
+                text: 'Ok',
+                handler: () => {
+                  console.log('Confirm Ok');
+                  onDeleteAllConfirm();
+                  setDeleteAllConfirm(false);
+                }
+              }
+            ]}
+          />
+        }
       </IonContent>
     </IonPage>
   );
 };
 
-export default Settings;
+const mapStateToProps = (state: IAppState) => ({
+  deleteAllLoading: state.isLoadingState.deleteAll
+})
+
+export default connect(mapStateToProps)(Settings);

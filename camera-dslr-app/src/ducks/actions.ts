@@ -151,6 +151,25 @@ export const deletePropertyRoomFail = (error: t.IAppError) : t.ActionTypes => {
     }
 }
 
+export const deleteAll = () : t.ActionTypes => {
+    return {
+        type: t.DELETE_ALL,
+    }
+}
+
+export const deleteAllSuccess = () : t.ActionTypes => {
+    return {
+        type: t.DELETE_ALL_SUCCESS,
+    }
+}
+
+export const deleteAllFail = (error: t.IAppError) : t.ActionTypes => {
+    return {
+        type: t.DELETE_ALL_FAILURE,
+        payload: error
+    }
+}
+
 // export const authSessionSuccess = (loggedInUser: t.ILoggedInUser) : t.ActionTypes => {
 //     return {
 //         type: t.AUTH_SESSION_SUCCESS,

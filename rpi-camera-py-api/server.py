@@ -38,24 +38,6 @@ def readSampleImagesAndTimes(foldername):
     for file in os.listdir(path):
         if os.path.isfile(os.path.join(path, file)):
             filenames.append(os.path.join(path, file))
-    # filenames = [
-    #            "images/memorial0061.jpg",
-    #            "images/memorial0062.jpg",
-    #            "images/memorial0063.jpg",
-    #            "images/memorial0064.jpg",
-    #            "images/memorial0065.jpg",
-    #            "images/memorial0066.jpg",
-    #            "images/memorial0067.jpg",
-    #            "images/memorial0068.jpg",
-    #            "images/memorial0069.jpg",
-    #            "images/memorial0070.jpg",
-    #            "images/memorial0071.jpg",
-    #            "images/memorial0072.jpg",
-    #            "images/memorial0073.jpg",
-    #            "images/memorial0074.jpg",
-    #            "images/memorial0075.jpg",
-    #            "images/memorial0076.jpg"
-    #            ]
 
     images = []
     for filename in filenames:
@@ -140,6 +122,21 @@ class DeleteHomePropertyRooms(Resource):
         filepath = os.path.join(dest_dir, dest_filename)
         if os.path.exists(filepath):
             os.remove(filepath)
+        return {'status':'success'}
+
+class DeleteAll(Resource):
+    def delete(self):
+        conn = db_connect.connect()
+        delquery = conn.execute("delete from [home-properties]")
+        delquery = conn.execute("delete from [home-rooms]")
+
+        dirpath =  os.path.join(app.config['MEDIA_PATH'], "final-blended/")
+        if os.path.exists(dirpath):
+            rmtree(dirpath)
+        
+        tempdirpath =  os.path.join(app.config['MEDIA_PATH'], "__temp/")
+        if os.path.exists(tempdirpath):
+            rmtree(tempdirpath)
         return {'status':'success'}
 
 class StaticFileServer(Resource):
@@ -279,6 +276,7 @@ api.add_resource(HomeProperties, '/homeproperties')
 api.add_resource(DeleteHomeProperty, '/homeproperties/delete/<id>')
 api.add_resource(HomePropertyRooms, '/homeproperties/<id>')
 api.add_resource(DeleteHomePropertyRooms, '/homeproperties/delete/<id>/<roomid>')
+api.add_resource(DeleteAll, '/homeproperties/deleteall')
 api.add_resource(StaticFileServer, '/staticfile')
 api.add_resource(Camera, '/camera/<scene>')
 api.add_resource(StreamCamera, '/stream/<enabled>')

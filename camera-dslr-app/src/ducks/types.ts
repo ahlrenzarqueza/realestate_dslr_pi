@@ -31,6 +31,7 @@ export interface IAppState {
         propertyRooms: boolean,
         camera: boolean,
         addRoom: boolean,
+        deleteAll: boolean,
     },
     errorState: IAppError | null,
     successState: string | null,
@@ -72,6 +73,9 @@ export const DELETE_PROPERTY_FAILURE = 'DELETE_PROPERTY_FAILURE';
 export const DELETE_PROPERTY_ROOM = 'DELETE_PROPERTY_ROOM';
 export const DELETE_PROPERTY_ROOM_SUCCESS = 'DELETE_PROPERTY_ROOM_SUCCESS';
 export const DELETE_PROPERTY_ROOM_FAILURE = 'DELETE_PROPERTY_ROOM_FAILURE';
+export const DELETE_ALL = 'DELETE_ALL';
+export const DELETE_ALL_SUCCESS = 'DELETE_ALL_SUCCESS';
+export const DELETE_ALL_FAILURE = 'DELETE_ALL_FAILURE';
 // export const AUTH_SESSION = 'AUTH_SESSION';
 // export const AUTH_SESSION_SUCCESS = 'AUTH_SESSION_SUCCESS';
 // export const AUTH_SESSION_FAILURE = 'AUTH_SESSION_FAILURE';
@@ -219,6 +223,19 @@ export interface DeletePropertyRoomFail {
     payload: IAppError,
 }
 
+export interface DeleteAll {
+    type: typeof DELETE_ALL,
+}
+
+export interface DeleteAllSuccess {
+    type: typeof DELETE_ALL_SUCCESS,
+}
+
+export interface DeleteAllFail {
+    type: typeof DELETE_ALL_FAILURE,
+    payload: IAppError,
+}
+
 export type ActionTypes = 
 CreatePropertyAction |
 CreatePropertySuccessAction |
@@ -241,7 +258,10 @@ DeletePropertySuccess |
 DeletePropertyFail |
 DeletePropertyRoom |
 DeletePropertyRoomSuccess |
-DeletePropertyRoomFail
+DeletePropertyRoomFail |
+DeleteAll |
+DeleteAllSuccess |
+DeleteAllFail
 // | AuthenticateSuccessAction
 // | AuthenticateFailureAction
 // | LoginAction

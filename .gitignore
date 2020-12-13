@@ -1,0 +1,4 @@
+node_modules/*
+rpi-camera-py-api/files/*
+rpi-camera-py-api/config.py
+debug.log

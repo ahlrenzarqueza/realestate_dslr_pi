@@ -92,6 +92,16 @@ function* deletePropertyRoom(action: t.DeletePropertyRoom) {
   }
 }
 
+function* deleteAll() {
+  try {
+    yield call(instance.delete, `/homeproperties/deleteall`);
+    yield put(actions.deleteAllSuccess());
+  }
+  catch(e) {
+    yield put(actions.deleteAllFail(getErrorReturn(500, e)));
+  }
+}
+
 export default function* rootSaga() {
     yield all([
       helloSaga()
@@ -103,4 +113,5 @@ export default function* rootSaga() {
     yield takeLatest(t.CREATE_PROPERTY_ROOM, createRoom);
     yield takeLatest(t.DELETE_PROPERTY, deleteProperty);
     yield takeLatest(t.DELETE_PROPERTY_ROOM, deletePropertyRoom);
+    yield takeLatest(t.DELETE_ALL, deleteAll);
   }
