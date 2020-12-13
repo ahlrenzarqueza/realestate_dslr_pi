@@ -13,9 +13,10 @@ import {
   IonButton,
   IonIcon,
   IonAlert,
+  IonText,
   useIonViewWillEnter
 } from '@ionic/react';
-import { trashOutline } from 'ionicons/icons';
+import { trashOutline, add } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
@@ -24,6 +25,7 @@ import { ContentWithFooter, FooterNavButton } from '../components/ContentWithFoo
 import LoaderContainer from '../components/LoaderContainer';
 import actions from '../ducks/actions';
 import * as t from '../ducks/types';
+import { usePrevious } from '../utils/helper';
 
 const StyledCardList = styled(IonList)<{ empty: boolean }>`
   display: flex;
@@ -32,14 +34,14 @@ const StyledCardList = styled(IonList)<{ empty: boolean }>`
   align-items: flex-start;
   align-content: flex-start;
 
-  &:before {
+  /* &:before {
     content: '${({ empty }) => empty ? 'No properties to show.' : ''}';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0.7;
-  }
+  } */
 
   ion-card {
     width: 100%;
@@ -67,11 +69,31 @@ const StyledButton = styled(IonButton)`
     }
 `;
 
+const StyledEmptyPlaceholder = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  flex-direction: column;
+  transform: translate(-50%,-50%);
+
+  > ion-text {
+    color: gray;
+    margin-bottom: 5px;
+  }
+
+  > ion-button {
+    width: 30mm
+  }
+`;
+
 interface IPropertyGalleryProps extends RouteComponentProps {
   propertyList: t.IPropertyDb[],
   isLoadingState: boolean,
+  activeProperty: t.IPropertyDb | null,
   getProperties: () => t.ActionTypes,
-  setActiveProperty: (p: t.IPropertyDb) => t.ActionTypes,
+  setActiveProperty: (p: t.IPropertyDb | null) => t.ActionTypes,
   deleteProperty: (id: number) => t.ActionTypes,
 }
 
@@ -81,14 +103,23 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
   isLoadingState,
   getProperties,
   setActiveProperty,
-  deleteProperty
+  deleteProperty,
+  activeProperty,
  }) => {
 
   const [deletePropertyConfirm, setDeletePropertyConfirm] = useState<t.IPropertyDb | null>(null);
 
   useIonViewWillEnter(() => {
+    setActiveProperty(null);
     getProperties();
   });
+
+  const prevActiveProperty = usePrevious(activeProperty);
+
+  useEffect(() => {
+    if(prevActiveProperty === null && activeProperty)
+      return history.push(`/gallery/${activeProperty.id}`)
+  }, [activeProperty])
 
   const BackToHomeBtn = (
     <FooterNavButton linkto="/home" isBackMode={true} history={history} color="tertiary">
@@ -97,16 +128,31 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
   )
 
   const handlePropertySelect = (property: t.IPropertyDb) => {
-    history.push({
-      pathname: `/gallery/${property.id}`,
-      state: property
-    });
+    setActiveProperty(property);
+    // history.push({
+    //   pathname: `/gallery/${property.id}`,
+    //   state: property
+    // });
   }
 
   const onDelete = (e: React.MouseEvent, property: t.IPropertyDb) => {
     e.stopPropagation();
     setDeletePropertyConfirm(property);
   }
+
+  const onAddProperty = (e: React.MouseEvent) => {
+    history.push('/addproperty');
+  }
+
+  const EmptyPlaceholder = (
+    <StyledEmptyPlaceholder>
+      <IonText>No properties on database.</IonText>
+      <IonButton color="primary" size="small" onClick={onAddProperty}>
+        <IonText>Add Property</IonText>
+        <IonIcon icon={add} slot="start"></IonIcon>
+      </IonButton>
+    </StyledEmptyPlaceholder>
+  )
 
   return (
     <IonPage>
@@ -132,6 +178,9 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
                     </IonCardHeader>
                   </IonCard>
               )}
+              {
+                !propertyList.length && EmptyPlaceholder
+              }
             </StyledCardList>
           </LoaderContainer>
         </ContentWithFooter>
@@ -170,9 +219,10 @@ const PropertyGallery: React.FC<IPropertyGalleryProps> = ({
   );
 };
 
-const mapStateToProps = ({ propertyList, isLoadingState } : t.IAppState) => ({
+const mapStateToProps = ({ propertyList, isLoadingState, activeProperty } : t.IAppState) => ({
   propertyList,
-  isLoadingState: isLoadingState.properties
+  isLoadingState: isLoadingState.properties,
+  activeProperty
 })
 
 const mapDispatchToProps = {

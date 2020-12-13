@@ -157,7 +157,7 @@ export interface GetPropertyRoomsFailureAction {
 
 export interface SetActiveProperty {
     type: typeof SET_ACTIVE_PROPERTY,
-    payload: IPropertyDb
+    payload: IPropertyDb | null
 }
 
 export interface TriggerCapture {

@@ -11,7 +11,8 @@ import {
   IonToolbar,
   IonText,
   IonAlert,
-  useIonViewWillEnter
+  useIonViewWillEnter,
+  useIonViewDidEnter,
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
@@ -34,14 +35,14 @@ const StyledCardList = styled(IonList)<{ empty: boolean }>`
   align-items: flex-start;
   flex-wrap: wrap;
 
-  &:before {
+  /* &:before {
     content: '${({ empty }) => empty ? 'No rooms to show.' : ''}';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0.7;
-  }
+  } */
 
   ion-card {
     flex-basis: calc(50% - 6mm);
@@ -64,14 +65,33 @@ const HeaderContainer = styled.div`
   padding: 0 4mm;
   background-color: var(--ion-toolbar-background);
   border-bottom-width: .55px;
-    border-bottom-style: solid;
-    border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-250, #c8c7cc)));
+  border-bottom-style: solid;
+  border-color: var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-250, #c8c7cc)));
   width: 100%;
 `
 
 const PropertyNameLabel = styled(IonText)`
 
 `
+
+const StyledEmptyPlaceholder = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  flex-direction: column;
+  transform: translate(-50%,-50%);
+
+  > ion-text {
+    color: gray;
+    margin-bottom: 5px;
+  }
+
+  > ion-button {
+    width: 30mm
+  }
+`;
 
 interface IProps extends RouteComponentProps {
   isLoadingState: boolean,
@@ -111,13 +131,25 @@ const RoomGallery: React.FC<IProps> = ({
 
   const { propertyId } = useParams<{ propertyId: string; }>();
 
-  useIonViewWillEnter(() => {
-    if(!location.state && !activeProperty) {
-      history.push('/properties');
+  useEffect(() => {
+    // console.log('Location state:',location.state);
+    // console.log('Active Property: ', activeProperty);
+    if(!activeProperty) {
+      return history.push('/properties');
     }
-    if(!activeProperty) setActiveProperty(location.state as t.IPropertyDb);
-    getPropertyRooms(parseInt(propertyId));
-  });
+    // if(!activeProperty) setActiveProperty(location.state as t.IPropertyDb);
+    getPropertyRooms(activeProperty.id);
+  }, [activeProperty]);
+
+  const EmptyPlaceholder = (
+    <StyledEmptyPlaceholder>
+      <IonText>No rooms on database.</IonText>
+      <IonButton color="primary" size="small" onClick={onAddRoom}>
+        <IonText>Add Room</IonText>
+        <IonIcon icon={add} slot="start"></IonIcon>
+      </IonButton>
+    </StyledEmptyPlaceholder>
+  )
 
   return (
     <IonPage>
@@ -145,6 +177,8 @@ const RoomGallery: React.FC<IProps> = ({
               {roomList.map(room => (
                 <RoomCard room={room} onDelete={onDelete} />
               ))}
+
+              {!roomList.length && EmptyPlaceholder}
             </StyledCardList>
           </LoaderContainer>
         </ContentWithFooter>

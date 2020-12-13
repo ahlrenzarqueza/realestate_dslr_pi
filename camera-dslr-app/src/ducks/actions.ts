@@ -62,7 +62,7 @@ export const getPropertyRoomsFail = (error: t.IAppError) : t.ActionTypes => {
     }
 }
 
-export const setActiveProperty = (property: t.IPropertyDb) : t.ActionTypes => {
+export const setActiveProperty = (property: t.IPropertyDb | null) : t.ActionTypes => {
     return {
         type: t.SET_ACTIVE_PROPERTY,
         payload: property
