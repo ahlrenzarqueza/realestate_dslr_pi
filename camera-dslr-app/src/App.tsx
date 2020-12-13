@@ -11,6 +11,7 @@ import { IonApp, IonRouterOutlet, IonSplitPane, IonToast, setupConfig } from '@i
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import * as t from './ducks/types';
 
 /* Core CSS required for Ionic components to work properly */
