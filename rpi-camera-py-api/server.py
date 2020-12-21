@@ -21,11 +21,11 @@ api = Api(app)
 CORS(app)
 cameraInterval = None
 
-def capturecommand(shutterspeed, foldername):
+def capturecommand(shutterspeed, fchoicenumber, foldername):
     dirpath = os.path.join(app.config['MEDIA_PATH'], "__temp/" + foldername)
     os.makedirs(dirpath, exist_ok=True);
     try:
-        subprocess.check_call(["gphoto2", "--set-config", "shutterspeed=" + str(shutterspeed), "--set-config", "imagesize=0", "--capture-image-and-download"], cwd=dirpath)
+        subprocess.check_call(["gphoto2", "--set-config", "shutterspeed=" + str(shutterspeed), "--set-config", "f-number=" + str(fchoicenumber), "--set-config", "imagesize=0", "--capture-image-and-download"], cwd=dirpath)
         return True
     except subprocess.CalledProcessError:
         return False
@@ -184,13 +184,37 @@ class Camera(Resource):
         choiceNumber = getShutterChoice[choiceNumberIndex : (choiceNumberIndex + choiceNumSpaceIndex)]
         choiceNumber = int(choiceNumber)
 
+        # Get F-Number
+        try: 
+            getFNumberChoice = subprocess.check_output(["gphoto2", "--get-config", "f-number"])
+        except subprocess.CalledProcessError:
+            return {'status': 'error', 'message': 'Camera problem. Please check if it is connected properly.'}, 500
+        except OSError:
+            return {'status': 'error', 'message': 'Camera problem. Please check if it is connected properly.'}, 500
+        
+        getFNumberChoice = str(getFNumberChoice)
+        
+        currentIndex = getFNumberChoice.index("Current: ")
+        nextLineIndex = getFNumberChoice.index("\\n", currentIndex + 9)
+        currentShutterVal = getFNumberChoice[(currentIndex+9):nextLineIndex]
+
+        choiceIndex = getFNumberChoice[nextLineIndex:].index(currentShutterVal)
+        lastLineBreakIndex = getFNumberChoice[ : (choiceIndex+nextLineIndex) ].rfind("\\n")
+        choiceNumberIndex = getFNumberChoice[lastLineBreakIndex : (choiceIndex+nextLineIndex)].index("Choice: ")
+
+        choiceNumberIndex = lastLineBreakIndex + choiceNumberIndex + 8
+        choiceNumSpaceIndex = getFNumberChoice[choiceNumberIndex : (choiceIndex+nextLineIndex)].index(" ")
+
+        fchoiceNumber = getFNumberChoice[choiceNumberIndex : (choiceNumberIndex + choiceNumSpaceIndex)]
+        fchoiceNumber = int(fchoiceNumber)
+
         captureKey = str(current_milli_time())
 
         if scene == 'outdoor':
             noerror = True
             speed = choiceNumber - 6
             while noerror == True and speed <= (choiceNumber + 6):
-                noerror = capturecommand(speed, captureKey)
+                noerror = capturecommand(speed, fchoiceNumber, captureKey)
                 speed = speed + 6
 
             if noerror == False:
@@ -200,7 +224,7 @@ class Camera(Resource):
             noerror = True
             speed = choiceNumber - 6
             while noerror == True and speed <= (choiceNumber + 6):
-                noerror = capturecommand(speed, captureKey)
+                noerror = capturecommand(speed, fchoiceNumber, captureKey)
                 speed = speed + 6
 
             if noerror == False:

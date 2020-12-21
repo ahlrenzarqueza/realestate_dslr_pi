@@ -131,6 +131,10 @@ const RoomGallery: React.FC<IProps> = ({
 
   const { propertyId } = useParams<{ propertyId: string; }>();
 
+  useIonViewWillEnter(() => {
+    if(activeProperty) getPropertyRooms(activeProperty.id);
+  });
+  
   useEffect(() => {
     // console.log('Location state:',location.state);
     // console.log('Active Property: ', activeProperty);
@@ -138,7 +142,7 @@ const RoomGallery: React.FC<IProps> = ({
       return history.push('/properties');
     }
     // if(!activeProperty) setActiveProperty(location.state as t.IPropertyDb);
-    getPropertyRooms(activeProperty.id);
+    // getPropertyRooms(activeProperty.id);
   }, [activeProperty]);
 
   const EmptyPlaceholder = (
